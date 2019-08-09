@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 var beerSchema = new Schema({
+    image_url: {type: String, default: "https://images.punkapi.com/v2/2.png"},
     tagline: {type: String, required: true},
     description: {type: String, required: true},
     first_brewed: {type: String, required: true},
