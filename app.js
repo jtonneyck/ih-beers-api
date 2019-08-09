@@ -19,7 +19,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/beers', require('./routes/beers'));
 
@@ -30,5 +29,5 @@ app.use(function (err, req, res, next) {
     if(err)res.status(err.status).send(err.message)
     else res.status(500).send("Oeeeps, something went wrong.")
   })
-  
+
 module.exports = app;
