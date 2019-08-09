@@ -5,6 +5,9 @@ var logger = require('morgan');
 var mongoose = require("mongoose");
 require("dotenv").config();
 var createError = require('http-errors')
+var cors = require("cors");
+
+app.use(cors());
 
 mongoose.connect(process.env.DB)
     .then((con)=> {
