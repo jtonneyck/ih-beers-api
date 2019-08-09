@@ -6,7 +6,7 @@ var createError = require('http-errors')
 router.get('/', function(req, res, next) {
   Beer.find({})
     .then((beers)=> {
-      res.json({beers})
+      res.json(beers)
     })
     .catch((error)=> {
       next(createError(500))
