@@ -7,7 +7,6 @@ require("dotenv").config();
 var createError = require('http-errors')
 var cors = require("cors");
 
-app.use(cors());
 
 mongoose.connect(process.env.DB)
     .then((con)=> {
@@ -17,6 +16,7 @@ mongoose.connect(process.env.DB)
         console.log("Not connected, reason: \n", error)
     })
 var app = express();
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(express.json());
