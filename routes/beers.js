@@ -30,7 +30,7 @@ router.get("/random", (req,res,next)=> {
 router.get("/search", (req,res, next)=> {
   Beer.find({$text: {$search: req.query.q}})
     .then((beers)=> {
-      res.json({beers})
+      res.json(beers)
     })
     .catch((error)=> {
       next(createError(500))
@@ -40,7 +40,7 @@ router.get("/search", (req,res, next)=> {
 router.get("/:beerId", (req,res, next)=> {
   Beer.findById(req.params.beerId)
     .then((beer)=> {
-      res.json({beer})
+      res.json(beer)
     })
     .catch((error)=> {
       next(createError(500))
@@ -53,7 +53,7 @@ router.post("/new", (req,res, next)=> {
       res.json(beer)
     })
     .catch((error)=> {
-      next(createError(500))
+      next(createError(400, error.message))
     })
   })
 
