@@ -11,4 +11,12 @@ var beerSchema = new Schema({
     name: {type: String, required: true}
 })
 
+beerSchema.index({
+    name: 'text', 
+    tagline: 'text',
+    brewers_tips: 'text',
+    description: 'text'
+});
+
+
 module.exports = mongoose.model("beer", beerSchema, "beers");

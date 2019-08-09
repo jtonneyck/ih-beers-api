@@ -14,19 +14,25 @@ router.get('/', function(req, res, next) {
 });
 
 router.get("/random", (req,res,next)=> {
-  debugger
   Beer.count()
     .then((count)=> {
       var random = Math.floor(Math.random() * count)
-      debugger
       return Beer.findOne().skip(random)
     })
     .then((beer)=> {
-      debugger
       res.json(beer)
     })
     .catch((error)=> {
-      debugger
+      next(createError(500))
+    })
+})
+
+router.get("/search", (req,res, next)=> {
+  Beer.find({$text: {$search: req.query.q}})
+    .then((beers)=> {
+      res.json({beers})
+    })
+    .catch((error)=> {
       next(createError(500))
     })
 })
@@ -42,7 +48,6 @@ router.get("/:beerId", (req,res, next)=> {
 })
 
 router.post("/new", (req,res, next)=> {
-  debugger
   Beer.create(req.body)
     .then((beer)=> {
       res.json(beer)
@@ -51,5 +56,6 @@ router.post("/new", (req,res, next)=> {
       next(createError(500))
     })
   })
+
 
 module.exports = router;
