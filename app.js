@@ -8,7 +8,7 @@ var createError = require('http-errors')
 var cors = require("cors");
 
 
-mongoose.connect(process.env.DB)
+mongoose.connect(process.env.DB, { useNewUrlParser: true } )
     .then((con)=> {
         console.log("connected")
     })
@@ -16,6 +16,7 @@ mongoose.connect(process.env.DB)
         console.log("Not connected, reason: \n", error)
     })
 var app = express();
+
 app.use(cors());
 
 app.use(logger('dev'));
@@ -28,9 +29,10 @@ app.use('/beers', require('./routes/beers'));
 app.use((req,res, next)=> {
     next(createError(404))
 })
+
 app.use(function (err, req, res, next) {
-    if(err)res.status(err.status).send(err.message)
-    else res.status(500).send("Oeeeps, something went wrong.")
-  })
+    if(err)res.status(err.status).json({message: err.message})
+    else res.status(500).json({message: "Oeeeps, something went wrong."})
+})
 
 module.exports = app;
