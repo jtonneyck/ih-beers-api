@@ -1,6 +1,6 @@
 {
-    "name": "iron-beers-api",
+    "name": "Iron Beers Api Doc",
     "version": "0.1.0",
-    "description": "apiDoc for the ironbeers api",
+    "description": "An API documentation for the Iron Beers api",
     "url": "https://ih-beers-api.herokuapp.coma"
   }

@@ -16,7 +16,7 @@ var beerSchema = new Schema({
             validator: function(value) {
               return this.model("beer").findOne({name: value})
                         .then((beer)=> {
-                            if(beer) throw new Error("Beer with this name already exists.");
+                            if(beer) throw new Error("A beer with this name already exists.");
                             else return;
                         })
             },

@@ -48,7 +48,6 @@ router.get('/', function(req, res, next) {
  *        "image_url": "https://images.punkapi.com/v2/2.png",
  *        "_id": "5d4d3bfc720fb89b71e013cf",
  *        "name": "Trashy Blonde",
- *        "tagline": "You Know You Shouldn't",
  *        "first_brewed": "04/2008",
  *        "description": "A titillating, neurotic, peroxide punk of a Pale Ale. Combining attitude, style, substance, and a little bit of low self esteem for good measure; what would your mother say? The seductive lure of the sassy passion fruit hop proves too much to resist. All that is even before we get onto the fact that there are no additives, preservatives, pasteurization or strings attached. All wrapped up with the customary BrewDog bite and imaginative twist.",
  *        "attenuation_level": 76,
@@ -167,7 +166,7 @@ router.get("/:beerId", (req,res, next)=> {
  * @apiGroup Beers
  * @apiParam {String} tagline               Mandatory tagline of the Beer.
  * @apiParam {String} description           Mandatory description of the Beer.
- * @apiParam {Date/String} first_brewed     Mandatory date of first brew of Beer. String in Date format.
+ * @apiParam {Date/String} first_brewed     Mandatory date of first brew of Beer. String in Date format: YYYY or YYYY-MM or YYYY-MM-DD.
  * @apiParam {Number} attenuation_level     Mandatory level of attenuation.
  * @apiParam {String} brewers_tips          Mandatory tips of the brewer.
  * @apiParam {String} contributed_by        Mandatory name of the brewer.
