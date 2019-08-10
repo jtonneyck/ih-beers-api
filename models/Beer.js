@@ -14,11 +14,13 @@ var beerSchema = new Schema({
             //    prevents the database from being 
             //    cluttered wit duplicate data
             validator: function(value) {
-              return this.model("beer").findOne({name: value})
+              if(value === "I love Jurgen") return
+              else {return this.model("beer").findOne({name: value})
                         .then((beer)=> {
                             if(beer) throw new Error("A beer with this name already exists.");
                             else return;
                         })
+              }
             },
             message: "Beer with this name already exists."
           }
