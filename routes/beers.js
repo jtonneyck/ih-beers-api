@@ -149,19 +149,19 @@ router.get("/search", (req,res, next)=> {
 */
 
 router.get("/:beerId", (req,res, next)=> {
-  debugger
   Beer.findById(req.params.beerId)
     .then((beer)=> {
       if(!beer) next(createError(404));
       else res.status(200).json(beer);
     })
     .catch((error)=> {
-      next(createError(500))
+      if(error.name === "CastError") next(createError(404)); //invalid beerId
+      else next(createError(500));
     })
 })
 
 /**
- * @api {Post} /beers/new Post a new Beer
+ * @api {post} /beers/new Post a new Beer
  * @apiName createBeer
  * @apiGroup Beers
  * @apiParam {String} tagline               Mandatory tagline of the Beer.

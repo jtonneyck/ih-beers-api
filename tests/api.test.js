@@ -4,30 +4,18 @@ var assert = require('chai').assert;
 var qs = require("querystring");
 var Beer = require("../models/Beer");
 
-var response;
-before(function(done) {
-    // to get _id to work with later
-    request(app)
+var beers;
+describe('GET /beers/', function() {
+    it("responds with json", function(done){
+        request(app)
         .get('/beers')
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res){
-            response = res;
+            beers = res;
             done();
         })
-});
-
-describe('GET /beers/', function() {
-    it("responds with json", function(done){
-        request(app)
-            .get('/beers')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end(function(err, res){
-                done();
-            })
     }) 
 });
 
@@ -45,10 +33,9 @@ describe('GET /beers/random', function() {
 });
 
 describe('GET /beers/:id', function() {
-    
     it("responds with json", function(done){
         request(app)
-            .get(`/beers/${response.body[0]._id}`)
+            .get(`/beers/${beers.body[0]._id}`)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
@@ -66,7 +53,6 @@ describe('GET /beers?query=beer', function() {
             .expect('Content-Type', /json/)
             .expect(200)
             .end(function(err, res){
-                response = res;
                 done();
             })
     })
@@ -109,14 +95,13 @@ describe('POST /beers/new', function() {
             })
     })
 
-    describe("",function(){
-        it("responds with 400 if the same beer is tried to be created again", function(){
-            return request(app)
-            .post(`/beers/new`)
-            .send(qs.stringify(newBeer))
-            .expect(400)
-        })
+    it("responds with 400 if the same beer is tried to be created again", function(){
+        return request(app)
+        .post(`/beers/new`)
+        .send(qs.stringify(newBeer))
+        .expect(400)
     })
+
 
     it("returns status code 400 on a bad request", function(done){
         delete newBeer.name
@@ -130,13 +115,13 @@ describe('POST /beers/new', function() {
                 done();
             })
     })
-    debugger
+    
     after(function(done){
         // tearing down
         Beer.findOneAndRemove(newBeerId)
             .exec((err, res)=> {
-                if(err) throw err
-                else done()
+                if(err) throw err;
+                else done();
             })
     })
 });
@@ -144,13 +129,14 @@ describe('POST /beers/new', function() {
 describe('GET /beers/does-not-exist', function() {
     it("returns 404 for a page that doesn't exist", function(){
         return request(app)
-            .get(`/beers/${response.body[0]._id}`)
+            .get(`/beers/${beers.body[0]._id}`)
             .expect(404)
+
     }) 
 
     it("returns 404 for a detail page of a beer that doesn't exist", function(){
         return request(app)
-            .get(`/beers/doesnotexist`)
+            .get(`/beers/does-not-exist`)
             .expect(404)
     }) 
 });

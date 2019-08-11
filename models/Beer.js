@@ -9,7 +9,9 @@ var beerSchema = new Schema({
     brewers_tips: {type: String, required: [true, "What, no tips? How am I supposed to drink. With which food am I supposed to pair this. I'm so confused."]},
     attenuation_level: {type: Number, required: [true, "Which color has this beer? Please provide the attenuation_level as a number."]},
     contributed_by: {type: String, required: [true, "Come on! Are you not proud of this beer?"]},
-    name: {type: String, required: [true, "How am I supposed to call this beer?" ],
+    name: {
+        type: String, 
+        required: [true, "How am I supposed to call this beer?" ],
         validate: {
             //    prevents the database from being 
             //    cluttered wit duplicate data

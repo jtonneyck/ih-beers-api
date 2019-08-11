@@ -1,4 +1,5 @@
 var express = require('express');
+var app = express();
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -6,7 +7,12 @@ var mongoose = require("mongoose");
 require("dotenv").config();
 var createError = require('http-errors')
 var cors = require("cors");
-
+const session = require('express-session')
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+}))
 
 mongoose.connect(process.env.DB, { useNewUrlParser: true } )
     .then((con)=> {
@@ -15,7 +21,14 @@ mongoose.connect(process.env.DB, { useNewUrlParser: true } )
     .catch((error)=> {
         console.log("Not connected, reason: \n", error)
     })
-var app = express();
+
+function protect(req,res,next){
+    if(!req.session.user) {
+        next(createError(403));
+    } else {
+        next();
+    }
+}
 
 app.use(cors());
 app.use("/", express.static('doc'))
@@ -25,6 +38,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/beers', require('./routes/beers'));
+app.use('/auth', require('./routes/auth'));
+app.use('/user', protect, require('./routes/user'));
 
 app.use((req,res, next)=> {
     next(createError(404))
