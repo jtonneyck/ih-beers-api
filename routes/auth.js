@@ -5,13 +5,13 @@ var createError = require('http-errors')
 
 /**
  * @api {post} /auth/signup                 Sign up user
- * @apiName authentication
+ * @apiName Signup
  * @apiGroup Auth
  * @apiParam {String} username              Mandatory username. Has to be unique.
  * @apiParam {String} firstname             Mandatory firstname of user.
  * @apiParam {String} lastname              Mandatory lastname of user.
  * @apiParam {String} email                 Mandatory email address of user. Has to be unique.
- * @apiParam {String} password              Mandatory Minimum eight characters, at least one letter and one number.
+ * @apiParam {String} password              Mandatory. Minimum eight characters, at least one letter and one number.
  *
  *   @apiErrorExample Error-Response:
  *     HTTP/1.1 400 Bad Request
@@ -35,6 +35,7 @@ var createError = require('http-errors')
  *        "email": "Jurgen.Tonneyck@ironhack.com",
  *     }
  */
+
 router.post("/signup", (req,res,next)=> {   
     User.create(req.body)
         .then((user)=> {
@@ -50,7 +51,7 @@ router.post("/signup", (req,res,next)=> {
 })
 /**
  * @api {post} /auth/login                  Log in user
- * @apiName authentication
+ * @apiName Login
  * @apiGroup Auth
  * @apiParam {String} username              Mandatory username. The same field can also contain an email address, but still has to be called 'username'.
  * @apiParam {String} password              Mandatory.
@@ -99,8 +100,8 @@ router.post("/login", (req,res,next)=> {
 })
 
 /**
- * @api {logout} /auth/logout               Log out user
- * @apiName authentication
+ * @api {get} /auth/logout               Log out user
+ * @apiName Logout
  * @apiGroup Auth
  * @apiParam {String} username              Mandatory username. The same field can also contain an email address, but still has to be called 'username'.
  * @apiParam {String} password   

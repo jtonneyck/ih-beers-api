@@ -33,40 +33,30 @@ describe('GET /beers/random', function() {
 });
 
 describe('GET /beers/:id', function() {
-    it("responds with json", function(done){
+    it("responds with json", function(){
         request(app)
             .get(`/beers/${beers.body[0]._id}`)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .end(function(err, res){
-                done();
-            })
     }) 
 });
 
 describe('GET /beers?query=beer', function() {
-    it("responds with json with a correct search term", function(done){
+    it("responds with json with a correct search term", function(){
         request(app)
             .get(`/beers?query=beer`)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .end(function(err, res){
-                done();
-            })
     })
 
-    it("reponse has 0 elements with an impossible search term", function(done){
+    it("reponse has 0 elements with an impossible search term", function(){
         request(app)
             .get(`/beers?query=beel;kasf;klasdfl;ka;sldkfi9213sdcaasdf;'mvzx'pfdr`)
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(200)
-            .end(function(err, res){
-                assert(res.body.length, 0)
-                done();
-            })
     })
 });
 
@@ -96,24 +86,19 @@ describe('POST /beers/new', function() {
     })
 
     it("responds with 400 if the same beer is tried to be created again", function(){
-        return request(app)
-        .post(`/beers/new`)
-        .send(qs.stringify(newBeer))
-        .expect(400)
+        request(app)
+            .post(`/beers/new`)
+            .send(qs.stringify(newBeer))
+            .expect(400)
     })
 
 
-    it("returns status code 400 on a bad request", function(done){
+    it("returns status code 400 on a bad request", function(){
         delete newBeer.name
         request(app)
             .post(`/beers/new`)
             .send(qs.stringify(newBeer))
             .expect(400)
-            .end(function(err, res){
-                if(err) console.log(err);
-                newBeerId = res.body._id
-                done();
-            })
     })
     
     after(function(done){
