@@ -7,6 +7,9 @@ var createError = require('http-errors')
  * @api {post} /auth/signup                 Sign up user
  * @apiName Signup
  * @apiGroup Auth
+ * @apiDescription After signing up the user is automatically logged in by
+ * setting a cookie and maintaining a session server side. This API is build to work with a
+ * SPA. Therefore there's no server side redirect. 
  * @apiParam {String} username              Mandatory username. Has to be unique.
  * @apiParam {String} firstname             Mandatory firstname of user.
  * @apiParam {String} lastname              Mandatory lastname of user.
@@ -27,9 +30,10 @@ var createError = require('http-errors')
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
+ *  set-cookie: connect.sid=s%3A0VMqqYBK3LGMKoKeeP8ntme0ZqT2rW95.2LmE%2BkYoa9khWbw7yBPJLHzxrF6b%2FDQhsraFNF%2FIvc8; Path=/; HttpOnly
  *     {
  *        "username": "MasterBrew",
- *        "_id": "5d4d3bfc720fb89b71e013cf",
+ *        "id": "5d4d3bfc720fb89b71e013cf",
  *        "firstname": "Jurgen",
  *        "lastname": "Tonneyck",
  *        "email": "Jurgen.Tonneyck@ironhack.com",
@@ -52,6 +56,9 @@ router.post("/signup", (req,res,next)=> {
 /**
  * @api {post} /auth/login                  Log in user
  * @apiName Login
+ * @apiDescription After logging a cookie is set and a session is maintained on the server.
+
+ *  This API is build to work with aSPA. Therefore there's no server side redirect. 
  * @apiGroup Auth
  * @apiParam {String} username              Mandatory username. The same field can also contain an email address, but still has to be called 'username'.
  * @apiParam {String} password              Mandatory.
@@ -67,9 +74,10 @@ router.post("/signup", (req,res,next)=> {
  * 
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 200 OK
+ *  set-cookie: connect.sid=s%3A0VMqqYBK3LGMKoKeeP8ntme0ZqT2rW95.2LmE%2BkYoa9khWbw7yBPJLHzxrF6b%2FDQhsraFNF%2FIvc8; Path=/; HttpOnly
  *     {
  *        "username": "MasterBrew",
- *        "_id": "5d4d3bfc720fb89b71e013cf",
+ *        "id": "5d4d3bfc720fb89b71e013cf",
  *        "firstname": "Jurgen",
  *        "lastname": "Tonneyck",
  *        "email": "Jurgen.Tonneyck@ironhack.com",
@@ -79,7 +87,7 @@ router.post("/signup", (req,res,next)=> {
 router.post("/login", (req,res,next)=> {
     User.findOne({$or: [{username: req.body.username}, {email: req.body.username}]})
         .then((user)=> {
-            if(!user) next(createError(401));
+            if(!user) next(createError(401), "Invalid credentials.");
             else {
             return user.comparePasswords(req.body.password)
                 .then((match)=> {
@@ -89,7 +97,7 @@ router.post("/login", (req,res,next)=> {
                         req.session.user = sessionData;
                         res.status(200).json(sessionData);
                     } else {
-                        next(createError(401));
+                        next(createError(401, "Invalid credentials."));
                     }
                 })
             }

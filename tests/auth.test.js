@@ -158,14 +158,16 @@ describe('/user/profile', () => {
 
 describe('/auth/logout', () => {
 
-    it("/should log out with status code 205", function(){
-        return agent
+    it("/should log out with status code 205", function(done){
+        agent
             .get("/auth/logout")
-            expect(205)
+            .expect(205)
+            .end(function(err, res) {
+                done()
+            })
     })
 
 });
-
 
 describe('/user/profile', () => {
     it("/should be declined access with status code 403", function(){
