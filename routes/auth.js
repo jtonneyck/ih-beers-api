@@ -41,6 +41,7 @@ var createError = require('http-errors')
  */
 
 router.post("/signup", (req,res,next)=> {   
+    debugger
     User.create(req.body)
         .then((user)=> {
             let {username, email, firstname, lastname, id} = user;
@@ -85,11 +86,13 @@ router.post("/signup", (req,res,next)=> {
  */
 
 router.post("/login", (req,res,next)=> {
+    debugger
     User.findOne({$or: [{username: req.body.username}, {email: req.body.username}]})
         .then((user)=> {
+            debugger
             if(!user) next(createError(401), "Invalid credentials.");
             else {
-            return user.comparePasswords(req.body.password)
+            return user.comparePasswords(req.body.password, user.password)
                 .then((match)=> {
                     if(match) {
                         let {username, email, firstname, lastname, id} = user;

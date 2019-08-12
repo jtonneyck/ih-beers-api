@@ -43,18 +43,20 @@ const userSchema = new Schema({
 })
 
 userSchema.pre('save', function(next) {
-    bcrypt.hash(this.password, 10, function(err, hash) {
+    var user = this;
+    bcrypt.hash(user.password, 10, function(err, hash) {
         if(err) throw new Error("Encryption error");
         else {
-            this.password = hash;
+            user.password = hash;
             next();
         }
-        });
+    });
 });
 
 userSchema.methods.comparePasswords = function(candidatePassword) {
+    var user = this;
     return new Promise(function(resolve, reject){
-        bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+        bcrypt.compare(candidatePassword, user.password, function(err, isMatch) {
             if (err) return reject(err);
             return resolve(isMatch);
         });
