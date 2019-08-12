@@ -111,8 +111,6 @@ router.post("/login", (req,res,next)=> {
  * @api {get} /auth/logout               Log out user
  * @apiName Logout
  * @apiGroup Auth
- * @apiParam {String} username              Mandatory username. The same field can also contain an email address, but still has to be called 'username'.
- * @apiParam {String} password   
  *   
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 500 Internal Server Error
