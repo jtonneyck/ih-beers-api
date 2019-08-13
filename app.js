@@ -8,6 +8,7 @@ require("dotenv").config();
 var createError = require('http-errors')
 var cors = require("cors");
 const session = require('express-session')
+
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
@@ -34,7 +35,7 @@ app.use(cors());
 app.use("/", express.static('doc'))
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({limit: '50mb'}));
 app.use(cookieParser());
 
 app.use('/beers', require('./routes/beers'));

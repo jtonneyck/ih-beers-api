@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Beer = require("../models/Beer")
 var createError = require('http-errors')
+var uploader = require('../configs/cloudinary-setup').beerUploader;
 
 /**
  * @api {get} /beers Get all Beers
@@ -171,7 +172,7 @@ router.get("/:beerId", (req,res, next)=> {
  * @apiParam {String} brewers_tips          Mandatory tips of the brewer.
  * @apiParam {String} contributed_by        Mandatory name of the brewer.
  * @apiParam {String} name                  Mandatory name of Beer. It has to be unique.
- *
+ * @apiParam {File} picture                 Optional. Picture has to be a png or jpg. If provided, set mimetype to multipart/form-data. If not provided the default picture will be "https://images.punkapi.com/v2/2.png".
  *   @apiErrorExample Error-Response:
  *     HTTP/1.1 400 Bad Request
  *     {
@@ -184,8 +185,23 @@ router.get("/:beerId", (req,res, next)=> {
  *       "message": "Oeeeps, something went wrong."
  *     }
 */
+// uploading a file is optional. If no file is provided and therefore
+// the form is not in multipart/form-data encoding no attempt should be made
+// to opload a file
+var uploadPic = uploader.single("picture")
+function uploadFileIfAvailable(req,res, next) {
+  if(req.headers['content-type'].includes("multipart/form-data")) {
+      uploadPic(req,res, function(err){
+        if(err) next(createError(500));
+        else {
+          req.body.image_url = req.file.secure_url;
+          next();
+        }
+      })
+  } else next();
+}
 
-router.post("/new", (req,res, next)=> {
+router.post("/new", uploadFileIfAvailable, (req,res, next)=> {
   Beer.create(req.body)
     .then((beer)=> {
       res.status(200).json(beer)
@@ -194,6 +210,5 @@ router.post("/new", (req,res, next)=> {
       next(createError(400, error.message))
     })
   })
-
 
 module.exports = router;
