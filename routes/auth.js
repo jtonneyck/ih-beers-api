@@ -41,7 +41,6 @@ var createError = require('http-errors')
  */
 
 router.post("/signup", (req,res,next)=> {   
-    debugger
     User.create(req.body)
         .then((user)=> {
             let {username, email, firstname, lastname, id} = user;
