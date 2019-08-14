@@ -3,7 +3,8 @@ var app = require("../app");
 var assert = require('chai').assert;
 var qs = require("querystring");
 var Beer = require("../models/Beer");
-var cloudinary = require("../config/cloudinary").cloudinary;
+const mongoose = require("mongoose");
+var cloudinary = require("../configs/cloudinary-setup").cloudinary;
 var beers;
 describe('GET /beers/', function() {
     it("responds with json", function(done){
@@ -74,15 +75,6 @@ describe('POST /beers/new', function() {
         "contributed_by": "Jurgen" 
     }
 
-    let newBeerB =  {
-        "name": "Lovely Beer",
-        "tagline": "Lovely little beer",
-        "description": "This beer is tender on the tongue.",
-        "first_brewed": "2019",
-        "brewers_tips": "Don't chuck it.",
-        "attenuation_level": "20",
-        "contributed_by": "Jurgen" 
-    }
     
     it("responds with 200 json after a beer has been created", function(done){
         request(app)
@@ -96,15 +88,29 @@ describe('POST /beers/new', function() {
             })
     })
 
+    let newBeerB =  {
+        name: "Lovely Beer",
+        tagline: "Lovely little beer",
+        description: "This beer is tender on the tongue.",
+        first_brewed: "2019",
+        brewers_tips: "Don't chuck it.",
+        attenuation_level: "20",
+        contributed_by: "Jurgen" 
+    }
+
     it("responds with 200 json after a beer has been created with an image", function(done){
-        debugger
         request(app)
             .post(`/beers/new`)
-            .field("name", "Beautifull")
+            .field("name", newBeerB.name)
+            .field("tagline", newBeerB.tagline)
+            .field("description", newBeerB.description)
+            .field("first_brewed", newBeerB.first_brewed)
+            .field("brewers_tips", newBeerB.brewers_tips)
+            .field("attenuation_level", newBeerB.attenuation_level)
+            .field("contributed_by", newBeerB.contributed_by)
             .attach("picture", "tests/beer2.jpeg")
             .expect(200)
             .end(function(err,res){
-                debugger
                 newBeerWithImage = res.body
                 done();
             })
@@ -116,40 +122,31 @@ describe('POST /beers/new', function() {
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err,res){
-            newBeerId = res.body._id;
+            newBeer = res.body;
             done();
         })
     })
     it("responds with 400 if the same beer is tried to be created again", function(){
         request(app)
             .post(`/beers/new`)
-            .send(qs.stringify(newBeer))
+            .send(qs.stringify(newBeerA))
             .expect(400)
     })
 
 
     it("returns status code 400 on a bad request", function(){
-        delete newBeer.name
+        delete newBeerA.name
         request(app)
             .post(`/beers/new`)
             .send(qs.stringify(newBeer))
             .expect(400)
-    })
-    
-    after(function(done){
-        // tearing down
-        Beer.findOneAndRemove(newBeerId)
-            .exec((err, res)=> {
-                if(err) throw err;
-                else done();
-            })
     })
 });
 
 describe('GET /beers/does-not-exist', function() {
     it("returns 404 for a page that doesn't exist", function(){
         return request(app)
-            .get(`/beers/${beers.body[0]._id}`)
+            .get(`/beers/${beers.body[0].id}`)
             .expect(404)
 
     }) 
@@ -159,8 +156,25 @@ describe('GET /beers/does-not-exist', function() {
             .get(`/beers/does-not-exist`)
             .expect(404)
     }) 
+
 });
 
 after(function(){
+    var ObjectId = mongoose.Types.ObjectId;
+    let reverseUploadProm = cloudinary.uploader.destroy(getPublicPictureId(newBeerWithImage.image_url));
+    let teardownBeersProm = Beer.deleteMany({
+        _id: {
+            $in: [newBeer._id, newBeerWithImage._id]
+        }})
 
+    return Promise.all([reverseUploadProm, teardownBeersProm])
+             .catch(err=> {
+                 console.log(err)
+             })
+             .then(()=> {
+                 console.log("Beers Tear down successful. Beers removed from db. Picture destroyed on cloudinary.")
+             })
 })
+function getPublicPictureId(url) {
+    return url.slice(url.lastIndexOf("/") + 1, url.lastIndexOf("."))
+}

@@ -12,7 +12,7 @@ cloudinary.config({
 
 var storage = cloudinaryStorage({
   cloudinary,
-  folder: 'beers', // The name of the folder in cloudinary
+  folder: 'beers-test', // The name of the folder in cloudinary
   allowedFormats: ['jpg', 'png']
   // params: { resource_type: 'raw' }, => this is in case you want to upload other type of files, not just images
 //   filename: function (req, res, cb) {
@@ -20,8 +20,8 @@ var storage = cloudinaryStorage({
 //   }
 });
 
-module.exports =  multer({ storage})
-
+module.exports =  multer({ storage});
+module.exports.cloudinary = cloudinary;
 
 // function fileFilter(req,file,cb){
 //     let newBeer = new Beer(req.body);

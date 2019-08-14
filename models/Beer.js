@@ -13,16 +13,12 @@ var beerSchema = new Schema({
         type: String, 
         required: [true, "How am I supposed to call this beer?" ],
         validate: {
-            //    prevents the database from being 
-            //    cluttered wit duplicate data
             validator: function(value) {
-              if(value === "I love Jurgen") return
-              else {return this.model("beer").findOne({name: value})
-                        .then((beer)=> {
-                            if(beer) throw new Error("A beer with this name already exists.");
-                            else return;
-                        })
-              }
+            return this.model("beer").findOne({name: value})
+                    .then((beer)=> {
+                        if(beer) throw new Error("A beer with this name already exists.");
+                        else return;
+                    })
             },
             message: "Beer with this name already exists."
           }
