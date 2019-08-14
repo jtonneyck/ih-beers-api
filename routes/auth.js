@@ -91,7 +91,7 @@ router.post("/login", (req,res,next)=> {
             debugger
             if(!user) next(createError(401), "Invalid credentials.");
             else {
-            return user.comparePasswords(req.body.password, user.password)
+            return user.comparePasswords(req.body.password)
                 .then((match)=> {
                     if(match) {
                         let {username, email, firstname, lastname, id} = user;

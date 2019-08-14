@@ -7,21 +7,25 @@ var mongoose = require("mongoose");
 require("dotenv").config();
 var createError = require('http-errors')
 var cors = require("cors");
-const session = require('express-session')
-
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-}))
+var session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 mongoose.connect(process.env.DB, { useNewUrlParser: true } )
     .then((con)=> {
-        console.log("connected")
+        console.log("connected to mongodb ")
     })
     .catch((error)=> {
-        console.log("Not connected, reason: \n", error)
+        console.log("Not connected to mongodb, reason: \n", error)
     })
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    store: new MongoStore({
+        mongooseConnection: mongoose.connection,
+        ttl: (14 * 24 * 60 * 60), // = 14 days. Default
+        autoRemove: 'native' // Default
+    })
+}));
 
 function protect(req,res,next){
     if(!req.session.user) {
@@ -35,7 +39,7 @@ app.use(cors());
 app.use("/", express.static('doc'))
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser());
 
 app.use('/beers', require('./routes/beers'));

@@ -3,7 +3,7 @@ var app = require("../app");
 var assert = require('chai').assert;
 var qs = require("querystring");
 var Beer = require("../models/Beer");
-
+var cloudinary = require("../config/cloudinary").cloudinary;
 var beers;
 describe('GET /beers/', function() {
     it("responds with json", function(done){
@@ -61,22 +61,33 @@ describe('GET /beers?query=beer', function() {
 });
 
 let newBeerId;
+let newBeerWithImage;
 describe('POST /beers/new', function() {
 
-    let newBeer =  {
+    let newBeerA =  {
         "name": "Trojan Horse",
         "tagline": "Lovely little beer",
         "description": "This beer is tender on the tongue, but ruthless to your vestibular system.",
         "first_brewed": "2019",
         "brewers_tips": "Don't chuck it.",
         "attenuation_level": "20",
-        "contributed_by": "Jurgen"
+        "contributed_by": "Jurgen" 
+    }
+
+    let newBeerB =  {
+        "name": "Lovely Beer",
+        "tagline": "Lovely little beer",
+        "description": "This beer is tender on the tongue.",
+        "first_brewed": "2019",
+        "brewers_tips": "Don't chuck it.",
+        "attenuation_level": "20",
+        "contributed_by": "Jurgen" 
     }
     
     it("responds with 200 json after a beer has been created", function(done){
         request(app)
             .post(`/beers/new`)
-            .send(qs.stringify(newBeer))
+            .send(qs.stringify(newBeerA))
             .expect('Content-Type', /json/)
             .expect(200)
             .end(function(err,res){
@@ -85,6 +96,30 @@ describe('POST /beers/new', function() {
             })
     })
 
+    it("responds with 200 json after a beer has been created with an image", function(done){
+        debugger
+        request(app)
+            .post(`/beers/new`)
+            .field("name", "Beautifull")
+            .attach("picture", "tests/beer2.jpeg")
+            .expect(200)
+            .end(function(err,res){
+                debugger
+                newBeerWithImage = res.body
+                done();
+            })
+    })
+
+    it("/should respond with beer data", function(done) {
+        request(app)
+        .get(`/beers/${newBeerId}`)
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end(function(err,res){
+            newBeerId = res.body._id;
+            done();
+        })
+    })
     it("responds with 400 if the same beer is tried to be created again", function(){
         request(app)
             .post(`/beers/new`)
@@ -125,3 +160,7 @@ describe('GET /beers/does-not-exist', function() {
             .expect(404)
     }) 
 });
+
+after(function(){
+
+})

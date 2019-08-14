@@ -25,6 +25,7 @@ describe("/auth signup a user", function() {
         .expect(200)
         .end(function(err, res){
             signedUpUser = res.body;
+            debugger
             done();
         })
     })

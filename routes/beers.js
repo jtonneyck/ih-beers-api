@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Beer = require("../models/Beer")
 var createError = require('http-errors')
-var uploader = require('../configs/cloudinary-setup').beerUploader;
+var uploader = require('../configs/cloudinary-setup')
 
 /**
  * @api {get} /beers Get all Beers
@@ -201,7 +201,8 @@ function uploadFileIfAvailable(req,res, next) {
   } else next();
 }
 
-router.post("/new", uploadFileIfAvailable, (req,res, next)=> {
+router.post("/new", (req,res,next)=> {debugger; next()},uploader.single("picture"), (req,res, next)=> {
+  debugger
   Beer.create(req.body)
     .then((beer)=> {
       res.status(200).json(beer)

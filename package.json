@@ -3,15 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "debug": "nodemon --inspect ./bin/www",
     "start": "node ./bin/www",
-    "test": "node_modules/.bin/mocha tests/ --exit",
-    "test-debug": "node_modules/.bin/mocha --inspect tests/ --exit",
+    "tests": "node_modules/.bin/mocha tests/ --exit",
+    "debug-tests": "node_modules/.bin/mocha --inspect tests/ --exit",
     "seed-db": "mongoimport beers.json --db iron-beer --collection beers --jsonArray"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
     "chai": "^4.2.0",
     "cloudinary": "^1.14.0",
+    "connect-mongo": "^3.0.0",
+    "connect-mongostore": "^0.1.4",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
