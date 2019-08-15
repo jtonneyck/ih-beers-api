@@ -18,6 +18,11 @@ mongoose.connect(process.env.DB, { useNewUrlParser: true } )
         console.log("Not connected to mongodb, reason: \n", error)
     })
 
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
     store: new MongoStore({
@@ -34,11 +39,6 @@ function protect(req,res,next){
         next();
     }
 }
-
-app.use(cors({
-    origin: true,
-    credentials: true
-}));
 
 app.use("/", express.static('doc'))
 app.use(logger('dev'));
