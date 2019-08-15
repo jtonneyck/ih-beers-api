@@ -24,6 +24,7 @@ app.use(cors({
 }));
 
 app.use(session({
+    save: false,
     secret: process.env.SESSION_SECRET,
     store: new MongoStore({
         mongooseConnection: mongoose.connection,
