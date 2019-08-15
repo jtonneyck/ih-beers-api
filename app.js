@@ -34,14 +34,16 @@ app.use(session({
 }));
 
 function protect(req,res,next){
-    console.log("check", req.session.user)
     if(!req.session.user) {
         next(createError(403));
     } else {
         next();
     }
 }
-
+app.use((req,res,next)=> {
+    console.log("check", req.session.user)
+    next()
+})
 app.use("/", express.static('doc'))
 app.use(logger('dev'));
 app.use(express.json());
