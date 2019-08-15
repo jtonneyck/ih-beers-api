@@ -34,6 +34,7 @@ app.use(session({
 }));
 
 function protect(req,res,next){
+    console.log("check", req.session.user)
     if(!req.session.user) {
         next(createError(403));
     } else {
