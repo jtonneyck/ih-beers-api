@@ -35,7 +35,11 @@ function protect(req,res,next){
     }
 }
 
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
+
 app.use("/", express.static('doc'))
 app.use(logger('dev'));
 app.use(express.json());

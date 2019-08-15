@@ -25,7 +25,7 @@ describe("/auth signup a user", function() {
         .expect(200)
         .end(function(err, res){
             signedUpUser = res.body;
-            done();
+            done(err);
         })
     })
 
@@ -120,7 +120,7 @@ describe('/auth/login', () => {
             .expect('set-cookie', /connect.sid/)
             .expect(200, function(err, res){
                 loggedInUser = res.body;
-                done();
+                done(err);
             })        
     })
 
@@ -163,7 +163,7 @@ describe('/auth/logout', () => {
             .get("/auth/logout")
             .expect(205)
             .end(function(err, res) {
-                done()
+                done(err)
             })
     })
 
@@ -173,7 +173,7 @@ describe('/user/profile', () => {
     it("/should be declined access with status code 403", function(){
         return agent
             .get("/user/profile")
-            expect(403)
+            .expect(403)
     })
 });
 
@@ -185,6 +185,6 @@ after(function(done){
     User.findOneAndRemove(signedUpUser.id)
         .exec(function(err,res){
             if(err) throw err;
-            else done(); 
+            else done(err); 
         })
 })

@@ -15,7 +15,7 @@ describe('GET /beers/', function() {
         .expect(200)
         .end(function(err, res){
             beers = res;
-            done();
+            done(err);
         })
     }) 
 });
@@ -28,7 +28,7 @@ describe('GET /beers/random', function() {
             .expect('Content-Type', /json/)
             .expect(200)
             .end(function(err, res){
-                done();
+                done(err);
             })
     }) 
 });
@@ -74,7 +74,6 @@ describe('POST /beers/new', function() {
         "attenuation_level": "20",
         "contributed_by": "Jurgen" 
     }
-
     
     it("responds with 200 json after a beer has been created", function(done){
         request(app)
@@ -84,7 +83,7 @@ describe('POST /beers/new', function() {
             .expect(200)
             .end(function(err,res){
                 newBeerId = res.body._id;
-                done();
+                done(err);
             })
     })
 
@@ -112,7 +111,7 @@ describe('POST /beers/new', function() {
             .expect(200)
             .end(function(err,res){
                 newBeerWithImage = res.body
-                done();
+                done(err);
             })
     })
 
@@ -123,7 +122,7 @@ describe('POST /beers/new', function() {
         .expect(200)
         .end(function(err,res){
             newBeer = res.body;
-            done();
+            done(err);
         })
     })
     it("responds with 400 if the same beer is tried to be created again", function(){
@@ -132,7 +131,6 @@ describe('POST /beers/new', function() {
             .send(qs.stringify(newBeerA))
             .expect(400)
     })
-
 
     it("returns status code 400 on a bad request", function(){
         delete newBeerA.name
@@ -175,6 +173,7 @@ after(function(){
                  console.log("Beers Tear down successful. Beers removed from db. Picture destroyed on cloudinary.")
              })
 })
+
 function getPublicPictureId(url) {
     return url.slice(url.lastIndexOf("/") + 1, url.lastIndexOf("."))
 }

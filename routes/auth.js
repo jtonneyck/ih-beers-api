@@ -9,7 +9,8 @@ var createError = require('http-errors')
  * @apiGroup Auth
  * @apiDescription After signing up the user is automatically logged in by
  * setting a cookie and maintaining a session server side. This API is build to work with a
- * SPA. Therefore there's no server side redirect. 
+ * SPA. Therefore there's no server side redirect. You have to enable cross-site access! If you use axios, you can enable it by setting withCredentials to true. 
+ * Otherwise the cookie will not be set and the session will not be maintained on the server.
  * @apiParam {String} username              Mandatory username. Has to be unique.
  * @apiParam {String} firstname             Mandatory firstname of user.
  * @apiParam {String} lastname              Mandatory lastname of user.
@@ -57,8 +58,9 @@ router.post("/signup", (req,res,next)=> {
  * @api {post} /auth/login                  Log in user
  * @apiName Login
  * @apiDescription After logging a cookie is set and a session is maintained on the server.
-
- *  This API is build to work with aSPA. Therefore there's no server side redirect. 
+ * You have to enable cross-site access! If you use axios, you can enable it by setting withCredentials to true. 
+ * Otherwise the cookie will not be set and the session will not be maintained on the server.
+ * This API is build to work with a SPA. Therefore there's no server side redirect. 
  * @apiGroup Auth
  * @apiParam {String} username              Mandatory username. The same field can also contain an email address, but still has to be called 'username'.
  * @apiParam {String} password              Mandatory.
