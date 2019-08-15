@@ -5,7 +5,7 @@ const router = express.Router();
  * @api {get} /user/profile                  Get profile
  * @apiName Profile
  * @apiDescription All user routes are protected. The user should be logged in first.
- * @apiGroup 
+ * @apiGroup user
  *
  *   @apiErrorExample Error-Response:
  *     HTTP/1.1 401 Unauthorized
@@ -25,7 +25,8 @@ const router = express.Router();
  *        "lastname": "Tonneyck",
  *        "email": "Jurgen.Tonneyck@ironhack.com",
  *     }
- */
+*/
+
 router.get("/profile", (req,res, next)=> {
     res.status(200).json(req.session.user);
 })
