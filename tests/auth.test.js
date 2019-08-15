@@ -25,6 +25,7 @@ describe("/auth signup a user", function() {
         .expect(200)
         .end(function(err, res){
             signedUpUser = res.body;
+            if(err) console.log(err);
             done(err);
         })
     })
@@ -108,8 +109,8 @@ describe("/auth signup a user", function() {
     })
     
 })
+let loggedInUser;
 describe('/auth/login', () => {
-    let loggedInUser;
     it("/should be able to login after a successful signup", function(done) {
         let loginUser = {username: newUserObject.username, password: newUserObject.password};
         // using agent to test protected routes later
@@ -119,6 +120,7 @@ describe('/auth/login', () => {
             .expect('Content-Type', /json/)
             .expect('set-cookie', /connect.sid/)
             .expect(200, function(err, res){
+                if(err) console.log(err);
                 loggedInUser = res.body;
                 done(err);
             })        
@@ -151,8 +153,11 @@ describe('/user/profile', () => {
     it("/should be able to access a protected route after loggin in", function(){
         return agent
             .get("/user/profile")
-            expect(200)
-    })
+            .expect(200)
+            .expect(function(res){
+                expect(res.body).to.deep.equal(loggedInUser);
+            })
+        })
 });
 
 
