@@ -11,7 +11,10 @@ var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 var morgan = require('morgan')
 
-mongoose.connect(process.env.DB, { useNewUrlParser: true } )
+mongoose.connect(process.env.DB, { 
+        useNewUrlParser: true,  
+        useCreateIndex: true
+    })
     .then((con)=> {
         console.log("connected to mongodb ")
     })
