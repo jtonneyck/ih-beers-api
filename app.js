@@ -9,6 +9,7 @@ var createError = require('http-errors')
 var cors = require("cors");
 var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+var morgan = require('morgan')
 
 mongoose.connect(process.env.DB, { useNewUrlParser: true } )
     .then((con)=> {
@@ -17,6 +18,8 @@ mongoose.connect(process.env.DB, { useNewUrlParser: true } )
     .catch((error)=> {
         console.log("Not connected to mongodb, reason: \n", error)
     })
+
+app.use(morgan('combined'))
 
 app.use(cors({
     origin: true,
@@ -40,10 +43,7 @@ function protect(req,res,next){
         next();
     }
 }
-app.use((req,res,next)=> {
-    console.log("check", req.session.user)
-    next()
-})
+
 app.use("/", express.static('doc'))
 app.use(logger('dev'));
 app.use(express.json());
@@ -59,6 +59,7 @@ app.use((req,res, next)=> {
 })
 
 app.use(function (err, req, res, next) {
+    console.log(err)
     if(err)res.status(err.status).json({message: err.message})
     else res.status(500).json({message: "Oeeeps, something went wrong."})
 })
