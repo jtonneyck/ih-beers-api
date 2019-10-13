@@ -1,6 +1,7 @@
 {
   "name": "own-beer-api",
   "version": "0.0.0",
+  "node-version": "v10.16.0",
   "private": true,
   "scripts": {
     "debug": "nodemon --inspect ./bin/www",
@@ -21,6 +22,7 @@
     "express": "~4.16.0",
     "express-session": "^1.16.2",
     "http-errors": "^1.7.3",
+    "jsonwebtoken": "^8.5.1",
     "mocha": "^6.2.0",
     "mongoose": "^5.6.9",
     "morgan": "^1.9.1",

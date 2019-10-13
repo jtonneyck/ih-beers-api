@@ -1,19 +1,22 @@
-var express = require('express');
-var app = express();
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var mongoose = require("mongoose");
+const express = require('express');
+const app = express();
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mongoose = require("mongoose");
 require("dotenv").config();
-var createError = require('http-errors')
-var cors = require("cors");
-var session = require('express-session');
+const createError = require('http-errors')
+const cors = require("cors");
+const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-var morgan = require('morgan')
+const morgan = require('morgan');
+const User = require("./models/user");
+const jwt = require('jsonwebtoken');
 
 mongoose.connect(process.env.DB, { 
         useNewUrlParser: true,  
-        useCreateIndex: true
+        useCreateIndex: true,
+        useUnifiedTopology: true 
     })
     .then((con)=> {
         console.log("connected to mongodb ")
@@ -40,12 +43,38 @@ app.use(session({
 }));
 
 function protect(req,res,next){
-    if(!req.session.user) {
-        next(createError(403));
-    } else {
+    debugger
+    if(req.session.user) {
         next();
+    } else if (req.get('Authorization')){
+        var AuthHeaderVal = req.get("Authorization")
+        var jwtToken = AuthHeaderVal.split(" ")[1]
+
+        try {
+            var decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
+            User.findById(decoded.userId)
+                .then((user)=> {
+                    debugger
+                    if(!user) next(createError(403))
+                    else {
+                        req.session.user = user;
+                        next()
+                    }
+                })
+                .catch((error)=> {
+                    next(createError(500));
+                });
+        } catch(err) {
+            next(createError(403))
+        }
+    } else {
+        next(createError(403))
     }
 }
+
+app.use("/test", protect, function(req,res){
+    debugger
+})
 
 app.use("/", express.static('doc'))
 app.use(logger('dev'));

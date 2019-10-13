@@ -9,6 +9,7 @@ cloudName=yourcloudinarycloudName
 cloudKey=yourcloudinaryKey
 cloudSecret=yourcloudinarysecret
 SESSION_SECRET=yoursessionsecret
+JWT_SECRET=yourjwtsecret
 ```
 
 You'll find your the cloudName, cloudKey and cloudSecret via the cloudinary console: 

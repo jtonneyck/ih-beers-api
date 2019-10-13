@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
-var createError = require('http-errors')
+const User = require("../models/user");
+const createError = require('http-errors')
+const jwt = require('jsonwebtoken');
 
 /**
  * @api {post} /auth/signup                 Sign up user
@@ -58,7 +59,7 @@ router.post("/signup", (req,res,next)=> {
             let {username, email, firstname, lastname, id} = user;
             let sessionData = {username, email, firstname, lastname, id};
             req.session.user = sessionData;
-            res.status(200).json(sessionData);
+            res.status(200).json({...sessionData, jwt: jwt.sign({userId: user._id}, process.env.JWT_SECRET)});
         })
         .catch((error)=> {
             if(error.name === "ValidationError") next(createError(400, error.message))
@@ -74,6 +75,7 @@ router.post("/signup", (req,res,next)=> {
  * With CRA you should start your server with 'HTTPS=true npm start'. Otherwise the cookie will not be set.
  * B) not automatically logged in, but the user will receive a JWT. If the JWT is put in the header like "Authorization: Basic theJWT", the user will be perceived as being logged in as well.
  * With JWT bases authentication CORS is no longer an issue.
+ * 
  * This API is build to work with a SPA. Therefore there's no server side redirect. 
  * 
  * The sign up data has to be send in the x-www-form-urlencoded data. You might want to use qs (https://www.npmjs.com/package/qs)in combination with axios for this. 
@@ -117,7 +119,7 @@ router.post("/login", (req,res,next)=> {
                         let {username, email, firstname, lastname, id} = user;
                         let sessionData = {username, email, firstname, lastname, id};
                         req.session.user = sessionData;
-                        res.status(200).json(sessionData);
+                        res.status(200).json({...sessionData, jwt: jwt.sign({userId: user._id}, process.env.JWT_SECRET)});
                     } else {
                         next(createError(401, "Invalid credentials."));
                     }
@@ -143,9 +145,10 @@ router.post("/login", (req,res,next)=> {
  * @apiSuccessExample Success-Response:
  *  HTTP/1.1 205 Reset Content
  */
- router.get("/logout", (req,res, next)=> {
-     req.session.destroy();
-     res.status(205).end();
- })
+
+router.get("/logout", (req,res, next)=> {
+    req.session.destroy();
+    res.status(205).end();
+})
 
 module.exports = router;
