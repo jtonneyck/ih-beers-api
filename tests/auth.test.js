@@ -178,7 +178,7 @@ describe('/user/profile', () => {
     it("/should be declined access with status code 403", function(){
         return agent
             .get("/user/profile")
-            .expect(403)
+            .expect(401)
     })
 });
 

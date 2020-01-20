@@ -25,8 +25,10 @@ var beerSchema = new Schema({
     }
 })
 
-// Makes text search possible
-// necessary for /beers/search?query=searchterm route
+/* 
+ *   Enables text search in mongodb
+ *   necessary for /beers/search?query=searchterm route
+ */
 beerSchema.index({
     name: 'text', 
     tagline: 'text',

@@ -11,7 +11,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const morgan = require('morgan');
 const User = require("./models/user");
-const jwt = require('jsonwebtoken');
+const jwt = require('./utils/jwtPromisified'); // only jwt.verify is promisified
 
 mongoose.connect(process.env.DB, { 
         useNewUrlParser: true,  
@@ -19,13 +19,13 @@ mongoose.connect(process.env.DB, {
         useUnifiedTopology: true 
     })
     .then((con)=> {
-        console.log("connected to mongodb ")
+        console.log("connected to mongodb ");
     })
     .catch((error)=> {
-        console.log("Not connected to mongodb, reason: \n", error)
+        console.log("Not connected to mongodb, reason: \n", error);
     })
 
-app.use(morgan('combined'))
+app.use(morgan('combined'));
 
 app.use(cors({
     origin: true,
@@ -43,38 +43,32 @@ app.use(session({
 }));
 
 function protect(req,res,next){
-    debugger
-    if(req.session.user) {
-        next();
-    } else if (req.get('Authorization')){
-        var AuthHeaderVal = req.get("Authorization")
-        var jwtToken = AuthHeaderVal.split(" ")[1]
-
-        try {
-            var decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
-            User.findById(decoded.userId)
-                .then((user)=> {
-                    debugger
-                    if(!user) next(createError(403))
-                    else {
-                        req.session.user = user;
-                        next()
-                    }
-                })
-                .catch((error)=> {
-                    next(createError(500));
-                });
-        } catch(err) {
-            next(createError(403))
-        }
-    } else {
-        next(createError(403))
-    }
+    if(req.session.user) next();
+    else if (req.get('Authorization')){
+        var AuthHeaderVal = req.get("Authorization");
+        var jwtToken = AuthHeaderVal.split("Bearer: ")[1]; // header value example: 'Bearer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZGEzOTQzNTU3MWQzOTY0NmY2MTQ3Y2EiLCJpYXQiOjsdfEwMDEzOTd9.u-Qh6A6YemgZGTQY7qbbqtAQ8NVTcBOQPGLfAPuiolc' 
+        jwt.verify(jwtToken)
+            .then((decoded)=> {
+                return User.findById(decoded.userId);
+            })
+            .catch((err)=> {
+                if(err.name === "TokenExpiredError") next(createError(401, "The access token has expired. Use the refresh token or log in in again."));
+                else next(createError(401, "Invalid or missing access token."));
+            })
+            .then((user)=> {
+                if(!user) next(createError(401));
+                else {
+                    delete user.password;
+                    delete user.refresh_token_valid;
+                    req.session.user = user;
+                    next();
+                }
+            })
+            .catch((error)=> {
+                next(createError(500));
+            })
+    } else next(createError(401));
 }
-
-app.use("/test", protect, function(req,res){
-    debugger
-})
 
 app.use("/", express.static('doc'))
 app.use(logger('dev'));
@@ -87,12 +81,12 @@ app.use('/auth', require('./routes/auth'));
 app.use('/user', protect, require('./routes/user'));
 
 app.use((req,res, next)=> {
-    next(createError(404))
+    next(createError(404));
 })
 
 app.use(function (err, req, res, next) {
-    if(err)res.status(err.status).json({message: err.message})
-    else res.status(500).json({message: "Oeeeps, something went wrong."})
+    if(err)res.status(err.status).json({message: err.message});
+    else res.status(500).json({message: "Oeeeps, something went wrong."});
 })
 
 module.exports = app;

@@ -3,8 +3,9 @@ var app = require("../app");
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var qs = require("querystring");
-var User = require("../models/User");
+var User = require("../models/user");
 var agent = request.agent(app);
+var agent2 = request.agent(app);
 
 var newUserObject = {
     username: "Piepongwong",
@@ -26,88 +27,29 @@ describe("/auth signup a user", function() {
         .expect(200)
         .end(function(err, res){
             signedUpUser = res.body;
+            console.log("LOGGED IN USER", signedUpUser)
             if(err) console.log(err);
             done(err);
         })
     })
 
-    it("/should return the user without the password and with an id and jwt", function() {
-        let newUserObjectCopy = {...newUserObject};
+    it("/should return the user without the password and with an id and access_token", function() {
+        let signedUpUserCopy = {...newUserObject};
         let resCopy = {...signedUpUser};
+
+        delete signedUpUserCopy.password;
+
         delete resCopy.id;
-        delete newUserObjectCopy.password;
+        delete resCopy.access_token;
+        delete resCopy.refresh_token;
+        delete resCopy.expires_in;
+        expect(signedUpUserCopy).to.deep.equal(resCopy);
+
         assert(typeof signedUpUser.id === "string");
-        assert(typeof signedUpUser.jwt === "string");
-        expect(newUserObjectCopy).to.deep.equal(resCopy);
-    })
+        assert(typeof signedUpUser.access_token === "string");
+        assert(typeof signedUpUser.refresh_token === "string");
+        assert(signedUpUser.expires_in === 900);
 
-    it("/should return 400 on incomplete data, no username", function(){
-        let newUserObjectCopy = {...newUserObject};
-        delete newUserObjectCopy.username;
-        return request(app)
-            .post('/auth/signup')
-            .send(qs.stringify(newUserObject))
-            .expect('Content-Type', /json/)
-            .expect(400)
-    })
-
-    it("/should return 400 on incomplete data, no email.", function(){
-        let newUserObjectCopy = {...newUserObject};
-        delete newUserObjectCopy.email;
-        return request(app)
-            .post('/auth/signup')
-            .send(qs.stringify(newUserObject))
-            .expect('Content-Type', /json/)
-            .expect(400)
-    })
-
-    it("/should return 400 on incomplete data, no password.", function(){
-        let newUserObjectCopy = {...newUserObject};
-        newUserObjectCopy.password = "";
-        return request(app)
-            .post('/auth/signup')
-            .send(qs.stringify(newUserObject))
-            .expect('Content-Type', /json/)
-            .expect(400)
-    })
-
-    it("/should return 400 on incorrect data, incorrect email.", function(){
-        let newUserObjectCopy = {...newUserObject};
-        newUserObjectCopy.email = "adfl;kasflk;"; 
-        return request(app)
-        .post('/auth/signup')
-        .send(qs.stringify(newUserObject))
-        .expect('Content-Type', /json/)
-        .expect(400)
-    })
-
-    it("/should return 400 on incorrect data, no proper password.", function(){
-        // should actually by 409, but it's hard to distinguish between validation errors in mongoose
-        let newUserObjectCopy = {...newUserObject};
-        newUserObjectCopy.password = "2css";
-        return request(app)
-            .post('/auth/signup')
-            .send(qs.stringify(newUserObject))
-            .expect('Content-Type', /json/)
-            .expect(400)
-    })
-
-    it("/should return 400 if username is already taken", function(){
-        // should actually by 409, but it's hard to distinguish between validation errors in mongoose
-        return request(app)
-        .post('/auth/signup')
-        .send(qs.stringify(newUserObject))
-        .expect('Content-Type', /json/)
-        .expect(400)
-    })
-
-    it("/should return 400 if email is already taken", function(){
-        // should actually by 409, but it's hard to distinguish between validation errors in mongoose
-        return request(app)
-        .post('/auth/signup')
-        .send(qs.stringify(newUserObject))
-        .expect('Content-Type', /json/)
-        .expect(400)
     })
     
 })
@@ -129,14 +71,23 @@ describe('/auth/login', () => {
             })        
     })
 
-    it("/should send back user data and jwt after successful login", function() {
+    it("/should send back user data, access token and refresh token after successful login", function() {
         let newUserObjectCopy = {...newUserObject};
         let resCopy = {...loggedInUser};
+        
         delete resCopy.id;
         delete newUserObjectCopy.password;
-        assert(typeof loggedInUser.id === "string");
-        assert(typeof loggedInUser.jwt === "string");
+        delete newUserObjectCopy.access_token;
+        delete newUserObjectCopy.refresh_token;
+        delete resCopy.expires_in;
+
         expect(newUserObjectCopy).to.deep.equal(resCopy);
+
+        assert(typeof signedUpUser.id === "string");
+        assert(typeof signedUpUser.access_token === "string");
+        assert(typeof signedUpUser.refresh_token === "string");
+        assert(signedUpUser.expires_in === 900);
+
     })
     
     it("/should respond with 401 with wrong credentials", function() {
@@ -154,22 +105,86 @@ describe('/auth/login', () => {
 })
 
 describe('/user/profile', () => {
-    it("/should be able to access a protected route after loggin in", function(){
-        return agent
+    it("/should be able to access a protected route with the access_token set in header", function(){
+        return agent2
             .get("/user/profile")
+            .set("Authorization", `Bearer: ${loggedInUser.access_token}`)
+            .set('Cookie', [''])
             .expect(200)
             .expect(function(res){
                 expect(res.body).to.deep.equal(loggedInUser);
             })
         })
 });
+let newAccessToken;
+describe('/auth/token', () => {
+    it("/should be able to exchange a refresh token for an access token", function(){
+        return agent2
+            .post("/auth/token")
+            .set('Cookie', [''])
+            .send(qs.stringify({refresh_token: signedUpUser.refresh_token}))
+            .expect(205)
+            .expect(function(res){
+                let signedUpUser = res.body;
+                let newUserObjectCopy = {...newUserObject};
+                let resCopy = {...signedUpUser};
+                newAccessToken = res.body.access_token;
+                delete resCopy.id;
+                delete newUserObjectCopy.password;
+                delete newUserObjectCopy.access_token;
+                delete newUserObjectCopy.refresh_token;
+                expect(newUserObjectCopy).to.deep.equal(resCopy);
+        
+                assert(typeof signedUpUser.id === "string");
+                assert(typeof signedUpUser.access_token === "string");
+                assert(typeof signedUpUser.refresh_token === "string");
+            })
+        })
+});
 
+describe('/auth/token', () => {
+    it("/should be able to access profile with newly obtained access token", function(){
+        return agent2
+            .post("/auth/token")
+            .set('Cookie', [''])
+            .send(qs.stringify({refresh_token: loggedInUser.refresh_token}))
+            .expect(205)
+            .expect(function(res){
+                var signedUpUser = res.body;
+                let newUserObjectCopy = {...newUserObject};
+                let resCopy = {...signedUpUser};
+                
+                delete resCopy.id;
+                delete newUserObjectCopy.password;
+                delete newUserObjectCopy.access_token;
+                delete newUserObjectCopy.refresh_token;
+                expect(newUserObjectCopy).to.deep.equal(resCopy);
+        
+                assert(typeof signedUpUser.id === "string");
+                assert(typeof signedUpUser.access_token === "string");
+                assert(typeof signedUpUser.refresh_token === "string");
+            })
+        })
+});
+
+describe('/user/profile', () => {
+    it("/should be refused access with a corrupt token", function(){
+        var access_tokenCorrupted = loggedInUser.access_token;
+        access_tokenCorrupted[50] = "p" // modifying at random
+        access_tokenCorrupted[2] = "v" // modifying at random
+        return agent2
+            .set({"Authorization": ""})
+            .set("Cookie", [""])
+            .get("/user/profile")
+            .expect(401)
+        })
+});
 
 describe('/auth/logout', () => {
-
     it("/should log out with status code 205", function(done){
-        agent
+        agent2
             .get("/auth/logout")
+            .set("Authorization", `Bearer: ${loggedInUser.access_token}`)
             .expect(205)
             .end(function(err, res) {
                 done(err)
@@ -178,19 +193,35 @@ describe('/auth/logout', () => {
 
 });
 
+describe('/auth/token', () => {
+    it("/should not be able to get a refresh token after logout", function(done){
+        agent2
+            .post("/auth/token")
+            .send(qs.stringify({refresh_token: loggedInUser.refresh_token}))
+            .expect(401)
+            .end(function(err, res) {
+                done(err)
+            })
+    })
+
+});
+
 describe('/user/profile', () => {
-    it("/should be declined access with status code 403", function(){
-        return agent
+    it("/should be declined access with status code 401 without access_token in header", function(){
+        return agent2
+            set("Authorization", "")
             .get("/user/profile")
-            .expect(403)
+            .expect(401)
     })
 });
 
-after(function(done){
+after(function(done){ 
     // tear down
+    console.log("Tear down called.")
     if(!signedUpUser.id) {
         signedUpUser = loggedInUser;
     }
+    console.log(loggedInUser)
     User.findOneAndRemove(signedUpUser.id)
         .exec(function(err,res){
             if(err) throw err;

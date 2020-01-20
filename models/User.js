@@ -26,7 +26,7 @@ const userSchema = new Schema({
             validator: function(email) {
               return this.model("user").findOne({email: email})
                         .then((user)=> {
-                            if(user) throw new Error("Annnn user with this email address already exists.");
+                            if(user) throw new Error("An user with this email address already exists.");
                             else return;
                         })
             },
@@ -39,6 +39,10 @@ const userSchema = new Schema({
         type: String,
         match: [/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, "A password should contain minimum eight characters, at least one letter and one number"],
         required: true
+    },
+    refresh_token_valid: {
+        type: Boolean,
+        default: true
     }
 })
 
