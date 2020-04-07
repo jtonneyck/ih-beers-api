@@ -57,13 +57,14 @@ app.use('/beers', require('./routes/beers'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user', protect, require('./routes/user'));
 
-app.use((req,res, next)=> {
-    next(createError(404))
+app.use(function (err, req, res, next) {
+    if(process.env.ENVIRONMENT !== "production") console.log(err.message, err.status);
+    if(err) res.status(err.status).json({message: err.message});
+    else res.status(500).json({message: "Oeeeps, something went wrong."});
 })
 
-app.use(function (err, req, res, next) {
-    if(err)res.status(err.status).json({message: err.message})
-    else res.status(500).json({message: "Oeeeps, something went wrong."})
+app.use((req,res, next)=> {
+    next(createError(404))
 })
 
 module.exports = app;

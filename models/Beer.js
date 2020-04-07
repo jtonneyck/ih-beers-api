@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const default_image_url = "https://images.punkapi.com/v2/2.png";
+module.exports.default_image_url = default_image_url;
 
 var beerSchema = new Schema({
-    image_url: {type: String, default: "https://images.punkapi.com/v2/2.png"},
+    image_url: {type: String, default: default_image_url},
     tagline: {type: String, required: [true, "Beers need taglines."]},
     description: {type: String, required: [true, "Beers deserve descriptions!"]},
     first_brewed: {type: Date, required: [true, "Beers should have a day of birth too. :( Please provide a date in the right format."]},
@@ -22,6 +24,11 @@ var beerSchema = new Schema({
             },
             message: "Beer with this name already exists."
           }
+    },
+    owner: {
+        type: mongoose.Types.ObjectId,
+        ref: "users",
+        required: false
     }
 })
 
@@ -33,5 +40,4 @@ beerSchema.index({
     brewers_tips: 'text',
     description: 'text'
 });
-
 module.exports = mongoose.model("beer", beerSchema, "beers");

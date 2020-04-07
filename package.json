@@ -10,6 +10,7 @@
     "seed-db": "mongoimport beers.json --db iron-beer --collection beers --jsonArray"
   },
   "dependencies": {
+    "apidoc": "^0.20.1",
     "bcrypt": "^3.0.0",
     "chai": "^4.2.0",
     "cloudinary": "^1.14.0",

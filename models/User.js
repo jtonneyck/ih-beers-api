@@ -9,7 +9,7 @@ const userSchema = new Schema({
         required: [true, "Please provide a username"],
         validate: {
             validator: function(username) {
-              return this.model("user").findOne({name: username})
+              return mongoose.model('user').findOne({name: username})
                         .then((user)=> {
                             if(user) throw new Error("An user with this name already exists.");
                             else return;
@@ -24,7 +24,7 @@ const userSchema = new Schema({
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill in a valid email address.'],
         validate: {
             validator: function(email) {
-              return this.model("user").findOne({email: email})
+              return mongoose.model('user').findOne({email: email})
                         .then((user)=> {
                             if(user) throw new Error("Annnn user with this email address already exists.");
                             else return;

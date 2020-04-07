@@ -125,7 +125,7 @@ describe('POST /beers/new', function() {
             done(err);
         })
     })
-    it("responds with 400 if the same beer is tried to be created again", function(){
+    it("responds with 400 if the same beer is tried to be created again", function(done){
         request(app)
             .post(`/beers/new`)
             .send(qs.stringify(newBeerA))
@@ -140,6 +140,14 @@ describe('POST /beers/new', function() {
             .expect(400)
     })
 });
+
+describe("GET /beers/delete/:id", function(){
+    it("returns 400 for a beer that doesn't exist", function(){
+        return request(app)
+        .get(`/beers/deelte/asdfojasdfkln321`)
+        .expect(404)
+    })
+})
 
 describe('GET /beers/does-not-exist', function() {
     it("returns 404 for a page that doesn't exist", function(){
