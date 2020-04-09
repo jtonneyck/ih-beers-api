@@ -34,8 +34,8 @@ router.get("/profile", (req,res, next)=> {
 })
 
  /**
- * @api {get} /user/profile/edit                  Post profile
- * @apiName Profile
+ * @api {post} /user/profile/edit                  Edit profile
+ * @apiName Edit profile
  * @apiDescription All user routes are protected. The user should be logged in first.
  * @apiGroup user
  *
@@ -84,7 +84,7 @@ router.post("/profile/edit", (req,res, next)=> {
 
 /**
  * @api {get} /user/my-beers                  Get my beers
- * @apiName Profile
+ * @apiName My beers
  * @apiDescription All user routes are protected. The user should be logged in first.
  * @apiGroup user
  *

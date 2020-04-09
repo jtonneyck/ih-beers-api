@@ -6,7 +6,7 @@ var uploader = require('../../configs/cloudinary-setup')
 var cloudinary = require("../../configs/cloudinary-setup").cloudinary.v2.uploader
 
 /**
- * @api {post} /beers/new Post a new Beer
+ * @api {post} /beers/new Post a new beer
  * @apiName createBeer
  * @apiGroup Beers
  * @apiParam {String} tagline               Mandatory tagline of the Beer.

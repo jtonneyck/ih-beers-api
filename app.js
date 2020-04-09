@@ -53,7 +53,7 @@ app.use(express.json());
 app.use(express.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser());
 
-app.use('/beers', require('./routes/beers'));
+app.use('/beers', require('./routes/beers/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user', protect, require('./routes/user'));
 

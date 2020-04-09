@@ -1,1 +1,15 @@
-define({  "name": "Iron Beers Api Doc",  "version": "0.1.0",  "description": "An API documentation for the Iron Beers api. Meant to practice with React, but not exclusively. ;)",  "url": "https://ih-beers-api.herokuapp.com",  "sampleUrl": false,  "defaultVersion": "0.0.0",  "apidoc": "0.3.0",  "generator": {    "name": "apidoc",    "time": "2019-08-15T19:00:47.772Z",    "url": "http://apidocjs.com",    "version": "0.17.7"  }});
+define({
+  "name": "Iron Beers Api Doc",
+  "version": "0.1.0",
+  "description": "An API documentation for the Iron Beers api. Meant to practice with React, but not exclusively. ;)",
+  "url": "https://ih-beers-api.herokuapp.com",
+  "sampleUrl": false,
+  "defaultVersion": "0.0.0",
+  "apidoc": "0.3.0",
+  "generator": {
+    "name": "apidoc",
+    "time": "2020-04-07T20:34:55.978Z",
+    "url": "http://apidocjs.com",
+    "version": "0.20.1"
+  }
+});

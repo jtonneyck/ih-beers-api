@@ -5,7 +5,7 @@ var Beer = require("../../models/Beer");
 var createError = require('http-errors');
 
 /**
- * @api {get} /beers/search?q=beer Get searched Beers
+ * @api {get} /beers/search?q=beer Get searched beers
  * @apiName searchBeer
  * @apiGroup Beers
  * @apiSuccessExample Success-Response:
@@ -36,15 +36,15 @@ var createError = require('http-errors');
  *       "message": "Oeeeps, something went wrong."
  *     }
 */
-
 router.get("/search", (req,res, next)=> {
     Beer.find({$text: {$search: req.query.q}})
         .then((beers)=> {
+            console.log("Hit", beers)
             if(!beers) next(createError(404));
             else res.status(200).json(beers);
         })
         .catch((error)=> {
-            ext(createError(500));
+            next(createError(500));
         })
 })
 

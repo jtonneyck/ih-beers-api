@@ -4,7 +4,7 @@ var Beer = require("../../models/Beer");
 var createError = require('http-errors');
 
 /**
-  * @api {get} /beers/:id Get a Single Beer
+  * @api {get} /beers/:id Get a single beer
   * @apiName getOneBeer
   * @apiGroup Beers
   * @apiParam {String} id unique Beer ID.

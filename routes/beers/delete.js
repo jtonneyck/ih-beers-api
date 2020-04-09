@@ -6,8 +6,8 @@ var ObjectId = require('mongoose').Types.ObjectId;
 var cloudinary = require('../../configs/cloudinary-setup').cloudinary;
 
 /**
- * @api {get} /beers/delete/:id Delete a Beer
- * @apiName getAllBeers
+ * @api {get} /beers/delete/:id Delete a beer
+ * @apiName Delete a beer
  * @apiGroup Beers
  * @apiDescription You can only delete beers that are either created by unregistered users or have been created by yourself.
  * @apiSuccessExample Success-Response:

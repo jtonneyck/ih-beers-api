@@ -40,4 +40,5 @@ beerSchema.index({
     brewers_tips: 'text',
     description: 'text'
 });
+
 module.exports = mongoose.model("beer", beerSchema, "beers");

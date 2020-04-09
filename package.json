@@ -1,8 +1,9 @@
 {
   "name": "own-beer-api",
-  "version": "0.0.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
+    "generate-docs": "apidoc -i ./routes/ -o ./doc",
     "debug": "nodemon --inspect ./bin/www",
     "start": "node ./bin/www",
     "tests": "node_modules/.bin/mocha tests/ --exit",
@@ -10,7 +11,6 @@
     "seed-db": "mongoimport beers.json --db iron-beer --collection beers --jsonArray"
   },
   "dependencies": {
-    "apidoc": "^0.20.1",
     "bcrypt": "^3.0.0",
     "chai": "^4.2.0",
     "cloudinary": "^1.14.0",
@@ -30,6 +30,7 @@
     "supertest": "^4.0.2"
   },
   "devDependencies": {
+    "newman": "^5.0.0",
     "querystring": "^0.2.0"
   }
 }

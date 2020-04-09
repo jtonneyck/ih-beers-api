@@ -4,7 +4,7 @@ var Beer = require("../../models/Beer")
 var createError = require('http-errors')
 
 /**
- * @api {get} /beers Get all Beers
+ * @api {get} /beers Get all beers
  * @apiName getAllBeers
  * @apiGroup Beers
  * @apiSuccessExample Success-Response:

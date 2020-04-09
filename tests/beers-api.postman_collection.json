@@ -1,0 +1,1282 @@
+{
+	"info": {
+		"_postman_id": "8b311f30-a956-4315-8f58-cc6a4d16d8f4",
+		"name": "beers-api Copy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "24785569-f2ea-4162-8e8a-41c0d1e7ab50",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "3137a0bb-187f-4815-a16a-87d4f6ec5ef9",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"username\": \"string\",",
+									"        \"email\": \"string\",",
+									"        \"firstname\": \"string\",",
+									"        \"lastname\": \"string\",",
+									"        \"id\": \"string\"",
+									"    }",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema, undefined, true)).to.be.true; // ban unknown properties",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"user-agent": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "firstname",
+									"value": "jurgen",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "tonneyck",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "Piepongwong",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "j.tonneyck@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/auth/signup",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bb7e4f6a-d74a-4f69-92ee-63895c53f4f4",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"username\": \"string\",",
+									"        \"email\": \"string\",",
+									"        \"firstname\": \"string\",",
+									"        \"lastname\": \"string\",",
+									"        \"id\": \"string\"",
+									"    }",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema, undefined, true)).to.be.true; // ban unknown properties",
+									"});",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"userId\", jsonData.id);",
+									"pm.globals.set(\"sid\", )"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "be1f7ed7-58fd-41f2-aedf-83ebb13e97f6",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "Piepongwong",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/auth/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "create beer",
+			"item": [
+				{
+					"name": "Create Beer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e5e8d50c-70da-4bd1-9de2-35a3e919d718",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"image_url\": \"string\",",
+									"        \"_id\": \"string\",",
+									"        \"tagline\": \"string\",",
+									"        \"description\": \"string\",",
+									"        \"first_brewed\": \"date\",",
+									"        \"brewers_tips\": \"string\",",
+									"        \"attenuation_level\": \"number\",",
+									"        \"contributed_by\": \"string\",",
+									"        \"name\": \"string\",",
+									"    }",
+									"};",
+									"",
+									"",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.globals.set(\"newBeerId\", jsonData._id);",
+									"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "tagline",
+									"value": "Lovely little beer",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "This beer is tender on the tongue, but ruthless to your vestibular system.",
+									"type": "text"
+								},
+								{
+									"key": "first_brewed",
+									"value": "2019-03",
+									"type": "text"
+								},
+								{
+									"key": "brewers_tips",
+									"value": "Don't chuck it.",
+									"type": "text"
+								},
+								{
+									"key": "attenuation_level",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "contributed_by",
+									"value": "Jurgen",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "I love Jurgennnn",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/beers/new",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"beers",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Beer with picture",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "55c0dd96-6b7f-4f2c-999c-785fc6a4345e",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"image_url\": \"string\",",
+									"        \"_id\": \"string\",",
+									"        \"tagline\": \"string\",",
+									"        \"description\": \"string\",",
+									"        \"first_brewed\": \"date\",",
+									"        \"brewers_tips\": \"string\",",
+									"        \"attenuation_level\": \"number\",",
+									"        \"contributed_by\": \"string\",",
+									"        \"name\": \"string\",",
+									"    }",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.globals.set(\"newBeerId\", jsonData._id);",
+									"  pm.expect(tv4.validate(jsonData, schema)).to.be.true; ",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "tagline",
+									"value": "Lovely little beer",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "This beer is tender on the tongue, but ruthless to your vestibular system.",
+									"type": "text"
+								},
+								{
+									"key": "first_brewed",
+									"value": "2019-03",
+									"type": "text"
+								},
+								{
+									"key": "brewers_tips",
+									"value": "drink it",
+									"type": "text"
+								},
+								{
+									"key": "attenuation_level",
+									"value": "3",
+									"type": "text"
+								},
+								{
+									"key": "contributed_by",
+									"value": "Jurgen",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "I love Jurgennnnnn1",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"type": "file",
+									"src": "beer2.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/beers/new",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"beers",
+								"new"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "delete beer",
+			"item": [
+				{
+					"name": "Delete | incorrect objectId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "650ed9db-b69c-4c93-90cf-af881cb947a3",
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/beers/delete/asdfasdf",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"beers",
+								"delete",
+								"asdfasdf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete beer | non existing beer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "650ed9db-b69c-4c93-90cf-af881cb947a3",
+								"exec": [
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/beers/delete/5e8b11d9f92c9b5c85b6d82e",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"beers",
+								"delete",
+								"5e8b11d9f92c9b5c85b6d82e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete beer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a369906a-efb3-45d7-8c72-2b70e5acac97",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"image_url\": \"string\",",
+									"        \"_id\": \"string\",",
+									"        \"tagline\": \"string\",",
+									"        \"description\": \"string\",",
+									"        \"first_brewed\": \"date\",",
+									"        \"brewers_tips\": \"string\",",
+									"        \"attenuation_level\": \"number\",",
+									"        \"contributed_by\": \"string\",",
+									"        \"name\": \"string\",",
+									"    }",
+									"};",
+									"",
+									"",
+									"pm.test(\"Status code is 205\", function () {",
+									"    pm.response.to.have.status(205);",
+									"});",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema)).to.be.true; // ban unknown properties",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/beers/delete/{{newBeerId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"beers",
+								"delete",
+								"{{newBeerId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "19451542-679f-42c4-95fb-2a56c4ac2b5d",
+						"type": "text/javascript",
+						"exec": [
+							"",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "9e519d5a-b9ff-48e3-8d09-ed29a3fa3950",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "add beer after login",
+			"item": [
+				{
+					"name": "Create Beer Logged In | with owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2887f6f6-57f1-4b46-8d7e-d92ec1b1e9f8",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"image_url\": \"string\",",
+									"        \"_id\": \"string\",",
+									"        \"tagline\": \"string\",",
+									"        \"description\": \"string\",",
+									"        \"first_brewed\": \"date\",",
+									"        \"brewers_tips\": \"string\",",
+									"        \"attenuation_level\": \"number\",",
+									"        \"contributed_by\": \"string\",",
+									"        \"name\": \"string\",",
+									"        \"owner\": \"string\"",
+									"    }",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.globals.set(\"newBeerId\", jsonData._id);",
+									"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "tagline",
+									"value": "Lovely little beer",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "This beer is tender on the tongue, but ruthless to your vestibular system.",
+									"type": "text"
+								},
+								{
+									"key": "first_brewed",
+									"value": "2019-03",
+									"type": "text"
+								},
+								{
+									"key": "brewers_tips",
+									"value": "Don't chuck it.",
+									"type": "text"
+								},
+								{
+									"key": "attenuation_level",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "contributed_by",
+									"value": "Jurgen",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "I love Jurgennn",
+									"type": "text"
+								},
+								{
+									"key": "picture",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/beers/new",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"beers",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete beer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a369906a-efb3-45d7-8c72-2b70e5acac97",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"image_url\": \"string\",",
+									"        \"_id\": \"string\",",
+									"        \"tagline\": \"string\",",
+									"        \"description\": \"string\",",
+									"        \"first_brewed\": \"date\",",
+									"        \"brewers_tips\": \"string\",",
+									"        \"attenuation_level\": \"number\",",
+									"        \"contributed_by\": \"string\",",
+									"        \"name\": \"string\",",
+									"    }",
+									"};",
+									"",
+									"",
+									"pm.test(\"Status code is 205\", function () {",
+									"    pm.response.to.have.status(205);",
+									"});",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/beers/delete/{{newBeerId}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"beers",
+								"delete",
+								"{{newBeerId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5acf4a0d-32d0-41d8-ba8f-a1039ca094dd",
+						"type": "text/javascript",
+						"exec": [
+							"const cookieJar = pm.cookies.jar();",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "738ad20e-3c4b-443e-a55c-73b38014f905",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "get my beers | logged in",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5e2e6ff8-a4ff-4c98-a52c-201ac8dce178",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"array\",",
+									"    \"items\": [ {",
+									"            type: \"object\",",
+									"            properties: {",
+									"                \"image_url\": {type: \"string\"},",
+									"                \"_id\": {type: \"string\"},",
+									"                \"tagline\": {type: \"string\"},",
+									"                \"description\": {type: \"string\"},",
+									"                \"first_brewed\": {\"type\": \"string\",\"format\": \"date-time\"},",
+									"                \"brewers_tips\": {type: \"string\"},",
+									"                \"attenuation_level\": {type: \"number\"},",
+									"                \"contributed_by\": {type: \"string\"},",
+									"                \"name\": {type: \"string\"}",
+									"            }",
+									"        }]",
+									"};",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+									"});",
+									"",
+									"",
+									"pm.test(\"All beers belong to the currently logged in user\", function () {",
+									"    var beers = pm.response.json();",
+									"    beers.forEach((beer)=> {",
+									"        pm.expect(beer.owner).to.eql(pm.variables.get(\"userId\"));",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableCookies": false
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/my-beers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"my-beers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post edit profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "42cea5e2-2bdd-4029-b41c-b7543d1b2952",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var schema = {",
+									"            type: \"object\",",
+									"            properties: {",
+									"                \"username\": {type: \"string\"},",
+									"                \"_id\": {type: \"string\"},",
+									"                \"email\": {type: \"string\"},",
+									"                \"firstname\": {type: \"string\"},",
+									"                \"lastname\": {\"type\": \"string\",\"format\": \"date-time\"},",
+									"            }",
+									"        };",
+									"",
+									"",
+									"pm.test('Schema is valid', function() {",
+									" var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema, undefined, true)).to.be.true; // ban unknown properties",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "WongPong",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456789ABCDEEEE",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "j.toonasdfsddfesdfyckkkdddd@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "firstname",
+									"value": "Klaas",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Vaak",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/user/profile/edit",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"profile",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "190f2817-082d-4107-b356-9e843512d8e1",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"username\": \"string\",",
+									"        \"email\": \"string\",",
+									"        \"firstname\": \"string\",",
+									"        \"lastname\": \"string\",",
+									"        \"id\": \"string\"",
+									"    }",
+									"};",
+									"",
+									"",
+									"pm.test('Schema is valid', function() {",
+									"  var jsonData = pm.response.json();",
+									"  pm.expect(tv4.validate(jsonData, schema, undefined, true)).to.be.true; // ban unknown properties",
+									"});",
+									"pm.globals.unset(\"variable_key\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/user/profile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d06347b3-4ceb-468d-8a0e-8a8dbe9e7bb5",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9ff8166-7603-4c91-ab40-0576e787c28b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Get single beer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dad38fdb-245f-40a8-9675-2c353a248cf3",
+						"exec": [
+							"var schema = {",
+							"    \"type\": \"object\",",
+							"    \"properties\": {",
+							"        \"image_url\": \"string\",",
+							"        \"_id\": \"string\",",
+							"        \"tagline\": \"string\",",
+							"        \"description\": \"string\",",
+							"        \"first_brewed\": \"date\",",
+							"        \"brewers_tips\": \"string\",",
+							"        \"attenuation_level\": \"number\",",
+							"        \"contributed_by\": \"string\",",
+							"        \"name\": \"string\",",
+							"        \"owner\": \"string\"",
+							"    }",
+							"};",
+							"",
+							"",
+							"",
+							"pm.test('Schema is valid', function() {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(tv4.validate(jsonData, schema)).to.be.true; // ban unknown properties",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/beers/5d4d20b3af0219c305076fd7",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"beers",
+						"5d4d20b3af0219c305076fd7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search beer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "41f31d02-8543-49e5-950d-75f78aaa1ae1",
+						"exec": [
+							"var schema = {",
+							"    \"type\": \"array\",",
+							"    \"items\": [ {",
+							"            type: \"object\",",
+							"            properties: {",
+							"                \"image_url\": {type: \"string\"},",
+							"                \"_id\": {type: \"string\"},",
+							"                \"tagline\": {type: \"string\"},",
+							"                \"description\": {type: \"string\"},",
+							"                \"first_brewed\": {\"type\": \"string\",\"format\": \"date-time\"},",
+							"                \"brewers_tips\": {type: \"string\"},",
+							"                \"attenuation_level\": {type: \"number\"},",
+							"                \"contributed_by\": {type: \"string\"},",
+							"                \"name\": {type: \"string\"}",
+							"            }",
+							"        }]",
+							"};",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test('Schema is valid', function() {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/beers/search?q=beer",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"beers",
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "beer"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get beers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f44755e5-22bd-49d8-822f-a05582219d21",
+						"exec": [
+							"var schema = {",
+							"    \"type\": \"array\",",
+							"    \"items\": [ {",
+							"            type: \"object\",",
+							"            properties: {",
+							"                \"image_url\": {type: \"string\"},",
+							"                \"_id\": {type: \"string\"},",
+							"                \"tagline\": {type: \"string\"},",
+							"                \"description\": {type: \"string\"},",
+							"                \"first_brewed\": {\"type\": \"string\",\"format\": \"date-time\"},",
+							"                \"brewers_tips\": {type: \"string\"},",
+							"                \"attenuation_level\": {type: \"number\"},",
+							"                \"contributed_by\": {type: \"string\"},",
+							"                \"name\": {type: \"string\"}",
+							"            }",
+							"        }]",
+							"};",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test('Schema is valid', function() {",
+							"  var jsonData = pm.response.json();",
+							"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/beers\n",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"beers\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "64df5df9-c5d2-4b49-9ddd-49b45f7fd8ad",
+						"exec": [
+							"pm.test(\"Status code is 205\", function () {",
+							"    pm.response.to.have.status(205);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/auth/logout",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post edit profile | not logged in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c3e31bfb-e91f-4d58-8e4e-be0715d796ef",
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableCookies": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "WongPong",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456789ABCDEEEE",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "j.lalalal@whieeeee.com",
+							"type": "text"
+						},
+						{
+							"key": "firstname",
+							"value": "Klaas",
+							"type": "text"
+						},
+						{
+							"key": "lastname",
+							"value": "Vaak",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/user/profile/edit",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"user",
+						"profile",
+						"edit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get my beers | not logged in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fcec56e3-d2ce-4a1b-939a-ce4697c474ef",
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/user/my-beers",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"user",
+						"my-beers"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "23a14154-b915-485a-a152-20704f01cd2d",
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.add({key: \"User-Agent\", value: \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36\"});",
+					"",
+					"const cookieJar = pm.cookies.jar();",
+					"cookieJar.set(pm.environment.get(\"host\"),\"connect.sid\",pm.globals.get(\"sid\"));"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ec4a99ff-adee-4095-af85-258088f811e2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

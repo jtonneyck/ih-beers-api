@@ -4,7 +4,7 @@ var Beer = require("../../models/Beer");
 var createError = require('http-errors');
 
 /**
- * @api {get} /beers/random Get a Random Beer
+ * @api {get} /beers/random Get a random beer
  * @apiName getRandomBeer
  * @apiGroup Beers
  * @apiSuccessExample Success-Response:
@@ -26,7 +26,6 @@ var createError = require('http-errors');
 */
 
 router.get("/random", (req,res,next)=> {
-    console.log("hit")
     Beer.countDocuments()
       .then((count)=> {
         var random = Math.floor(Math.random() * count)
