@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:10.16.3
+      - image: circleci/node:14.4.0
 
       # Specify service dependencies here if necessary.
       # CircleCI maintains a library of pre-built images
@@ -37,7 +37,7 @@ jobs:
       - run: npm run tests
   deploy:
     docker:
-      - image: circleci/node:10.16.3
+      - image: circleci/node:14.4.0
     steps:
       - checkout
       - run:
