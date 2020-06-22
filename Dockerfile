@@ -1,5 +1,5 @@
-# Use an official Python runtime as a parent image
-FROM circleci/node:10.16.3
+# Use an official node runtime as a parent image
+FROM circleci/node:14.4.0
 
 USER root
 # Set the working directory to /app

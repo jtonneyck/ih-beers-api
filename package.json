@@ -6,13 +6,14 @@
     "generate-docs": "apidoc -i ./routes/ -o ./doc",
     "debug": "nodemon --inspect ./bin/www",
     "start": "node ./bin/www",
-    "tests": "node_modules/.bin/mocha tests/ --exit",
-    "debug-tests": "node_modules/.bin/mocha --inspect tests/ --exit",
+    "tests": "node ./tests/tests-and-teardown.js",
     "seed-db": "mongoimport beers.json --db iron-beer --collection beers --jsonArray"
+  },
+  "engines": {
+    "node": "14.4.0"
   },
   "dependencies": {
     "bcrypt": "^3.0.0",
-    "chai": "^4.2.0",
     "cloudinary": "^1.14.0",
     "connect-mongo": "^3.0.0",
     "cookie-parser": "~1.4.3",
@@ -22,15 +23,12 @@
     "express": "~4.16.0",
     "express-session": "^1.16.2",
     "http-errors": "^1.7.3",
-    "mocha": "^6.2.0",
     "mongoose": "^5.6.9",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
-    "multer-storage-cloudinary": "^2.2.1",
-    "supertest": "^4.0.2"
+    "multer-storage-cloudinary": "^2.2.1"
   },
   "devDependencies": {
-    "newman": "^5.0.0",
-    "querystring": "^0.2.0"
+    "newman": "^5.1.0"
   }
 }

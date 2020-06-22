@@ -1,25 +1,25 @@
 var express = require('express');
 var app = express();
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require("mongoose");
 require("dotenv").config();
-var createError = require('http-errors')
+var createError = require('http-errors');
 var cors = require("cors");
 var session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
-var morgan = require('morgan')
+var morgan = require('morgan');
 
 mongoose.connect(process.env.DB, { 
         useNewUrlParser: true,  
-        useCreateIndex: true
+        useCreateIndex: true,
+        useUnifiedTopology: true
     })
-    .then((con)=> {
-        console.log("connected to mongodb ")
+    .then((connection)=> {
+        console.log("connected to mongodb ");
     })
     .catch((error)=> {
-        console.log("Not connected to mongodb, reason: \n", error)
+        console.log("Not connected to mongodb, reason: \n", error);
     })
 
 app.use(morgan('combined'))
@@ -57,14 +57,14 @@ app.use('/beers', require('./routes/beers/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/user', protect, require('./routes/user'));
 
+app.use((req,res, next)=> {
+    next(createError(404));
+})
+
 app.use(function (err, req, res, next) {
     if(process.env.ENVIRONMENT !== "production") console.log(err.message, err.status);
     if(err) res.status(err.status).json({message: err.message});
     else res.status(500).json({message: "Oeeeps, something went wrong."});
-})
-
-app.use((req,res, next)=> {
-    next(createError(404))
 })
 
 module.exports = app;

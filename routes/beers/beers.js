@@ -28,7 +28,6 @@ var createError = require('http-errors')
  *       "message": "Oeeeps, something went wrong."
  *     }
 */
-
 router.get('/', function(req, res, next) {
   Beer.find({})
     .then((beers)=> {
