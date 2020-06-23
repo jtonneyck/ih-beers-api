@@ -3,7 +3,7 @@ var router = express.Router();
 var Beer = require("../../models/Beer")
 var createError = require('http-errors')
 var uploader = require('../../configs/cloudinary-setup')
-var cloudinary = require("../../configs/cloudinary-setup").cloudinary.v2.uploader
+var cloudinaryImgUploadRollback = require("../../middleware/cloudinaryImgUploadRollback");
 
 /**
  * @api {post} /beers/new Post a new beer
@@ -42,38 +42,15 @@ var cloudinary = require("../../configs/cloudinary-setup").cloudinary.v2.uploade
 *     }
 */
 
-// Validates fields. If invalidate, roll back file upload.
-// If no file is uploaded, no extra validation is needed.
-function formDataValidator(req,res,next) {
-    if(req.file) {
-      let newBeer = new Beer(req.body)
-      newBeer.validate()
-      .then((validate)=> {
-        req.body.image_url = req.file.secure_url;
-        next();
-      })
-      .catch((error)=> {
-        return cloudinary
-                .destroy(req.file.public_id)
-                .then((result)=> {
-                  next(createError(400, error.message));
-                })
-      })
-      .catch((error)=> {
-        next(createError(400, error.message));
-      })
-    } else next();
-  }
-  
-router.post("/new",uploader.single("picture"), formDataValidator, (req,res, next)=> {
+router.post("/new", uploader.single("picture"), (req,res, next)=> {
     if(req.session.user) req.body.owner = req.session.user.id;
+    if(req.file) req.body.image_url = req.file.secure_url;
     Beer.create(req.body)
-        .then((beer)=> {
-            res.status(200).json(beer);
-        })
-        .catch((error)=> {
-            next(createError(400, error.message));
-        })
+        .then((beer)=> res.status(200).json(beer))
+        .catch(async (error)=> {            
+          if(req.file) await cloudinaryImgUploadRollback(req.file.public_id);
+          next(createError(400, error.message));
+      })
 })
 
 module.exports = router;

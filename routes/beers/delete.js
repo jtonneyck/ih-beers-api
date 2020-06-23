@@ -4,6 +4,7 @@ var Beer = require("../../models/Beer");
 var createError = require('http-errors');
 var ObjectId = require('mongoose').Types.ObjectId;
 var cloudinary = require('../../configs/cloudinary-setup').cloudinary;
+var cloudinaryImgUploadRollback = require("../../middleware/cloudinaryImgUploadRollback");
 
 /**
  * @api {get} /beers/delete/:id Delete a beer
@@ -61,7 +62,7 @@ router.get("/delete/:id", (req,res,next)=> {
             else if((beer && beer.owner) && !req.session.user) next(createError(403, "We don't know you, guy. Please log in first."));
             else if((beer && beer.owner) && (beer.owner.toString() !== req.session.user.id)) next(createError(403, "This is not your beer, pal!."));
             else if (beer.image_url !== default_image_url){
-                return cloudinary.uploader.destroy(getPublicPictureId(beer.image_url))
+                return cloudinaryImgUploadRollback(beer.image_url)
                         .then((response)=> {
                             return beer.remove();
                         });
@@ -75,7 +76,4 @@ router.get("/delete/:id", (req,res,next)=> {
         })
 })
 
-function getPublicPictureId(url) {
-    return url.slice(url.lastIndexOf("/") + 1, url.lastIndexOf("."))
-}
 module.exports = router;

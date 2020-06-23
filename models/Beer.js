@@ -16,7 +16,7 @@ var beerSchema = new Schema({
         required: [true, "How am I supposed to call this beer?" ],
         validate: {
             validator: function(value) {
-            return this.model("beer").findOne({name: value})
+            return mongoose.model("beer").findOne({name: value})
                     .then((beer)=> {
                         if(beer) throw new Error("A beer with this name already exists.");
                         else return;

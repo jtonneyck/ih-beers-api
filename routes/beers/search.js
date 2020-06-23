@@ -39,6 +39,7 @@ var createError = require('http-errors');
 router.get("/search", (req,res, next)=> {
     Beer.find({$text: {$search: req.query.q}})
         .then((beers)=> {
+            debugger
             if(!beers) next(createError(404));
             else res.status(200).json(beers);
         })

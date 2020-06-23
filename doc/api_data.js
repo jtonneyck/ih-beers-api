@@ -301,6 +301,101 @@ define({ "api": [
     "groupTitle": "Beers"
   },
   {
+    "type": "post",
+    "url": "/beers/edit/:beerId",
+    "title": "Edit a Beer",
+    "name": "editBeer",
+    "group": "Beers",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "tagline",
+            "description": "<p>Optional tagline of the Beer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Optional description of the Beer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Date/String",
+            "optional": false,
+            "field": "first_brewed",
+            "description": "<p>Optional date of first brew of Beer. String in Date format: YYYY or YYYY-MM or YYYY-MM-DD.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "attenuation_level",
+            "description": "<p>Optional level of attenuation.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "brewers_tips",
+            "description": "<p>Optional tips of the brewer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "contributed_by",
+            "description": "<p>Optional name of the brewer.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Optional name of Beer. It has to be unique.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "File",
+            "optional": false,
+            "field": "picture",
+            "description": "<p>Optional. Picture has to be a png or jpg. If provided, set mimetype to multipart/form-data. The old picture will be removed if a new one is chosen.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"message\": \"beer validation failed: ...\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n  \"message\": \"Oeeeps, something went wrong.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n   \"image_url\": \"https://images.punkapi.com/v2/2.png\",\n   \"_id\": \"5d4d3bfc720fb89b71e013cf\",\n   \"name\": \"Trashy Blonde\",\n   \"tagline\": \"You Know You Shouldn't\",\n   \"first_brewed\": \"04/2008\",\n   \"description\": \"A titillating, neurotic, peroxide punk of a Pale Ale. Combining attitude, style, substance, and a little bit of low self esteem for good measure; what would your mother say? The seductive lure of the sassy passion fruit hop proves too much to resist. All that is even before we get onto the fact that there are no additives, preservatives, pasteurization or strings attached. All wrapped up with the customary BrewDog bite and imaginative twist.\",\n   \"attenuation_level\": 76,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/beers/edit.js",
+    "groupTitle": "Beers"
+  },
+  {
     "type": "get",
     "url": "/beers",
     "title": "Get all beers",

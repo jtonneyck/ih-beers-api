@@ -7,5 +7,6 @@ router.use(require("./random"));
 router.use(require("./search")); 
 router.use(require("./detail")); // get /beers/:id
 router.use(require("./new")); 
+router.use(require("./edit")); 
 
 module.exports = router;
