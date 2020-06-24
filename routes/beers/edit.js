@@ -50,6 +50,7 @@ router.post("/edit/:beerId",uploader.single("picture"), (req,res, next)=> {
         .then(async (beer)=> {
             if(!beer) return next(createError(404, "This beer does not exist"));
             if(beer.name === req.body.name) delete req.body.name // If the name is the same, ignore it because of the validator.
+            if(req.file) req.body.image_url = req.file.secure_url;
             return Beer.findByIdAndUpdate(req.params.beerId, req.body, {new: true, runValidators: true});
         })
         .then(async (beer)=> {
