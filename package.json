@@ -7,7 +7,7 @@
     "debug": "nodemon --inspect ./bin/www",
     "start": "node ./bin/www",
     "tests": "node ./tests/tests-and-teardown.js",
-    "seed-db": "mongoimport beers.json --db iron-beer --collection beers --jsonArray"
+    "seed-db": "mongoimport beers.json --db iron-beer2 --collection beers --jsonArray"
   },
   "engines": {
     "node": "14.4.0"

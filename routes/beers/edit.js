@@ -5,6 +5,7 @@ var createError = require('http-errors');
 var uploader = require('../../configs/cloudinary-setup');
 var cloudinary = require("../../configs/cloudinary-setup").cloudinary.v2.uploader;
 const cloudinaryImgUploadRollback = require('../../middleware/cloudinaryImgUploadRollback');
+const { create } = require('../../models/Beer');
 
 /**
  * @api {post} /beers/edit/:beerId Edit a Beer
@@ -31,7 +32,7 @@ const cloudinaryImgUploadRollback = require('../../middleware/cloudinaryImgUploa
  *     }
  * 
  *  @apiSuccessExample Success-Response:
-*     HTTP/1.1 200 OK
+*     HTTP/1.1 200 Ok
 *     {
 *        "image_url": "https://images.punkapi.com/v2/2.png",
 *        "_id": "5d4d3bfc720fb89b71e013cf",
@@ -45,12 +46,15 @@ const cloudinaryImgUploadRollback = require('../../middleware/cloudinaryImgUploa
 
 router.post("/edit/:beerId",uploader.single("picture"), (req,res, next)=> {
     if(req.body.owner) delete req.body.owner; // you can't change the owner
-    Beer.findByIdAndUpdate(req.params.beerId, req.body, {
-            new: true, runValidators: true
+    Beer.findById(req.params.beerId)
+        .then(async (beer)=> {
+            if(!beer) return next(createError(404, "This beer does not exist"));
+            if(beer.name === req.body.name) delete req.body.name // If the name is the same, ignore it because of the validator.
+            return Beer.findByIdAndUpdate(req.params.beerId, req.body, {new: true, runValidators: true});
         })
         .then(async (beer)=> {
             // if the user changed the picture, remove the old one
-            if(req.file.secure_url !== beer.image_url) await cloudinaryImgUploadRollback(getPublicPictureId(req.file.secure_url));
+            if(req.file && req.file.secure_url !== beer.image_url) await cloudinaryImgUploadRollback(getPublicPictureId(req.file.secure_url));
             res.status(200).json(beer);
         })
         .catch(async (error)=> {            
