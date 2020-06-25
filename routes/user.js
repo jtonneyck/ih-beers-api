@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const Beer = require("../models/Beer");
 const createError = require('http-errors');
+const { findByIdAndUpdate } = require("../models/Beer");
 /**
  * @api {get} /user/profile                  Get profile
  * @apiName Profile
@@ -70,8 +71,12 @@ router.get("/profile", (req,res, next)=> {
 */
 
 router.post("/profile/edit", (req,res, next)=> {
-    User.findOneAndUpdate({_id: req.session.user.id},req.body, {new: true, runValidators: true})
-        .select({username: 1, firstname:1, lastname: 1, email: 1})
+    User.findOne({_id: req.session.user.id})
+        .then((user)=> {
+            return findByIdAndUpdate({_id: req.session.user.id},req.body, {new: true, runValidators: true})
+                .select({username: 1, firstname:1, lastname: 1, email: 1})
+
+        })
         .then((user)=> {
             res.json(user);
         })
