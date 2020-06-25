@@ -10,7 +10,7 @@
     "seed-db": "mongoimport beers.json --db iron-beer2 --collection beers --jsonArray"
   },
   "engines": {
-    "node": "14.4.0"
+    "node": "12.18.1"
   },
   "dependencies": {
     "bcrypt": "^3.0.0",

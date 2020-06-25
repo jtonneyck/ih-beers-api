@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 var ValidationError = mongoose.Error.ValidationError;
+mongoose.set('useFindAndModify', false);
 
-const userSchema = new Schema({
+var userSchema = new Schema({
     username: {
         type: String, 
         required: [true, "Please provide a username"],
@@ -37,7 +38,7 @@ const userSchema = new Schema({
     lastname: {type: String, required: true},
     password: {
         type: String,
-        match: [/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, "A password should contain minimum eight characters, at least one letter and one number"],
+        match: [/^(?=.*[A-Za-z\$])(?=.*\d)[A-Za-z\$\d]{8,}$/, "A password should contain minimum eight characters, at least one letter and one number"],
         required: true
     }
 })

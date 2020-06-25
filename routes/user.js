@@ -3,7 +3,6 @@ const router = express.Router();
 const User = require("../models/User");
 const Beer = require("../models/Beer");
 const createError = require('http-errors');
-const { findByIdAndUpdate } = require("../models/Beer");
 /**
  * @api {get} /user/profile                  Get profile
  * @apiName Profile
@@ -71,21 +70,23 @@ router.get("/profile", (req,res, next)=> {
 */
 
 router.post("/profile/edit", (req,res, next)=> {
-    User.findOne({_id: req.session.user.id})
+        User.findById(req.session.user.id)
         .then((user)=> {
-            return findByIdAndUpdate({_id: req.session.user.id},req.body, {new: true, runValidators: true})
-                .select({username: 1, firstname:1, lastname: 1, email: 1})
-
+            if(req.body.email && req.body.email === user.email) delete req.body.email;
+            if(req.body.username && req.body.username === user.username) delete req.body.username;
+            Object.keys(req.body).forEach((key)=> {
+                user[key] = req.body[key];
+            })
+            return user.save(); // we have to trigger the mongoose save hook. Otherwhise passwords will not be hashed.
         })
-        .then((user)=> {
-            res.json(user);
+        .then(({username, email,firstname, lastname})=> {
+            res.json({username, email,firstname, lastname});
         })
         .catch((error)=> {
-            debugger
             if(error.name === "ValidationError") next(createError(400, error.message));
             else next(createError(500));
         })
-})
+    })
 
 /**
  * @api {get} /user/my-beers                  Get my beers

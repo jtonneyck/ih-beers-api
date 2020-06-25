@@ -1,5 +1,5 @@
 # Use an official node runtime as a parent image
-FROM circleci/node:14.4.0
+FROM circleci/node:12.18.1
 
 USER root
 # Set the working directory to /app

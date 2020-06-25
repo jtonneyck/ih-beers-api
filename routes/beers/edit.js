@@ -44,10 +44,10 @@ const { create } = require('../../models/Beer');
 *     }
 */
 
-router.post("/edit/:beerId",uploader.single("picture"), (req,res, next)=> {
+router.post("/edit/:beerId",uploader.single("picture"), (req,res,next)=> {
     if(req.body.owner) delete req.body.owner; // you can't change the owner
     Beer.findById(req.params.beerId)
-        .then(async (beer)=> {
+        .then((beer)=> {
             if(!beer) return next(createError(404, "This beer does not exist"));
             if(beer.name === req.body.name) delete req.body.name // If the name is the same, ignore it because of the validator.
             if(req.file) req.body.image_url = req.file.secure_url;
@@ -56,7 +56,7 @@ router.post("/edit/:beerId",uploader.single("picture"), (req,res, next)=> {
         .then(async (beer)=> {
             // if the user changed the picture, remove the old one
             if(req.file && req.file.secure_url !== beer.image_url) await cloudinaryImgUploadRollback(getPublicPictureId(req.file.secure_url));
-            res.status(200).json(beer);
+            if(beer) res.status(200).json(beer);
         })
         .catch(async (error)=> {            
             if(req.file) await cloudinaryImgUploadRollback(req.file.public_id);
