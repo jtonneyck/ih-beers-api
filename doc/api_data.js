@@ -386,7 +386,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n   \"image_url\": \"https://images.punkapi.com/v2/2.png\",\n   \"_id\": \"5d4d3bfc720fb89b71e013cf\",\n   \"name\": \"Trashy Blonde\",\n   \"tagline\": \"You Know You Shouldn't\",\n   \"first_brewed\": \"04/2008\",\n   \"description\": \"A titillating, neurotic, peroxide punk of a Pale Ale. Combining attitude, style, substance, and a little bit of low self esteem for good measure; what would your mother say? The seductive lure of the sassy passion fruit hop proves too much to resist. All that is even before we get onto the fact that there are no additives, preservatives, pasteurization or strings attached. All wrapped up with the customary BrewDog bite and imaginative twist.\",\n   \"attenuation_level\": 76,\n}",
+          "content": "HTTP/1.1 200 Ok\n{\n   \"image_url\": \"https://images.punkapi.com/v2/2.png\",\n   \"_id\": \"5d4d3bfc720fb89b71e013cf\",\n   \"name\": \"Trashy Blonde\",\n   \"tagline\": \"You Know You Shouldn't\",\n   \"first_brewed\": \"04/2008\",\n   \"description\": \"A titillating, neurotic, peroxide punk of a Pale Ale. Combining attitude, style, substance, and a little bit of low self esteem for good measure; what would your mother say? The seductive lure of the sassy passion fruit hop proves too much to resist. All that is even before we get onto the fact that there are no additives, preservatives, pasteurization or strings attached. All wrapped up with the customary BrewDog bite and imaginative twist.\",\n   \"attenuation_level\": 76,\n}",
           "type": "json"
         }
       ]
@@ -501,6 +501,7 @@ define({ "api": [
     "type": "get",
     "url": "/beers/search?q=beer",
     "title": "Get searched beers",
+    "description": "<p>Does a basic text search on name, tagline, description and brewers_tips</p>",
     "name": "searchBeer",
     "group": "Beers",
     "success": {
@@ -532,11 +533,11 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/user/profile/edit",
-    "title": "Edit profile",
-    "name": "Edit_profile",
-    "description": "<p>All user routes are protected. The user should be logged in first.</p>",
+    "url": "/user/profile/edit/email",
+    "title": "Edit email",
+    "name": "Edit_email",
     "group": "user",
+    "description": "<p>All user routes are protected. The user should be logged in first.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -545,8 +546,53 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "username",
-            "description": "<p>Optional. username. Has to be unique.</p>"
-          },
+            "description": "<p>Mandatory username. Has to be unique.</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 403 Forbidden",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"message\": \"user validation failed: ...\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n  \"message\": \"Oeeeps, something went wrong.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n   {\n      \"username\": \"MasterBrew\",\n      \"id\": \"5d4d3bfc720fb89b71e013cf\",\n      \"firstname\": \"Jurgen\",\n      \"lastname\": \"Tonneyck\",\n      \"email\": \"Jurgen.Tonneyck@ironhack.com\",\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/user.js",
+    "groupTitle": "user"
+  },
+  {
+    "type": "post",
+    "url": "/user/profile/edit",
+    "title": "Edit firstname, lastname",
+    "name": "Edit_firstname,_lastname",
+    "description": "<p>Username, email, and password are handle separately. All user routes are protected. The user should be logged in first.</p>",
+    "group": "user",
+    "parameter": {
+      "fields": {
+        "Parameter": [
           {
             "group": "Parameter",
             "type": "String",
@@ -560,20 +606,110 @@ define({ "api": [
             "optional": false,
             "field": "lastname",
             "description": "<p>Optional. lastname of user.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "email",
-            "description": "<p>Optional. email address of user. Has to be unique.</p>"
-          },
+          }
+        ]
+      }
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 403 Forbidden",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"message\": \"user validation failed: ...\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n  \"message\": \"Oeeeps, something went wrong.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n   {\n      \"username\": \"MasterBrew\",\n      \"id\": \"5d4d3bfc720fb89b71e013cf\",\n      \"firstname\": \"Jurgen\",\n      \"lastname\": \"Tonneyck\",\n      \"email\": \"Jurgen.Tonneyck@ironhack.com\",\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/user.js",
+    "groupTitle": "user"
+  },
+  {
+    "type": "post",
+    "url": "/user/profile/edit/password",
+    "title": "Edit password",
+    "name": "Edit_password",
+    "description": "<p>All user routes are protected. The user should be logged in first.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "password",
-            "description": "<p>Optional. Minimum eight characters, at least one letter and one number.</p>"
+            "description": "<p>Mandatory. Minimum eight characters, at least one letter and one number.</p>"
+          }
+        ]
+      }
+    },
+    "group": "user",
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 403 Forbidden",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"message\": \"user validation failed: ...\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 500 Internal Server Error\n{\n  \"message\": \"Oeeeps, something went wrong.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n   {\n      \"username\": \"MasterBrew\",\n      \"id\": \"5d4d3bfc720fb89b71e013cf\",\n      \"firstname\": \"Jurgen\",\n      \"lastname\": \"Tonneyck\",\n      \"email\": \"Jurgen.Tonneyck@ironhack.com\",\n   }",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/user.js",
+    "groupTitle": "user"
+  },
+  {
+    "type": "post",
+    "url": "/user/profile/edit/username",
+    "title": "Edit username",
+    "name": "Edit_username",
+    "group": "user",
+    "description": "<p>All user routes are protected. The user should be logged in first.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Mandatory username. Has to be unique.</p>"
           }
         ]
       }

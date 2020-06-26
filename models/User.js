@@ -3,14 +3,15 @@ const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 var ValidationError = mongoose.Error.ValidationError;
 mongoose.set('useFindAndModify', false);
-
+const passwordRegex = /^(?=.*[A-Za-z\$])(?=.*\d)[A-Za-z\$\d]{8,}$/;
+const passwordValidationError = "A password should contain minimum eight characters, at least one letter and one number.";
 var userSchema = new Schema({
     username: {
         type: String, 
         required: [true, "Please provide a username"],
         validate: {
             validator: function(username) {
-              return mongoose.model('user').findOne({name: username})
+              return mongoose.model('user').findOne({username: username})
                         .then((user)=> {
                             if(user) throw new Error("An user with this name already exists.");
                             else return;
@@ -38,7 +39,7 @@ var userSchema = new Schema({
     lastname: {type: String, required: true},
     password: {
         type: String,
-        match: [/^(?=.*[A-Za-z\$])(?=.*\d)[A-Za-z\$\d]{8,}$/, "A password should contain minimum eight characters, at least one letter and one number"],
+        match: [passwordRegex, passwordValidationError],
         required: true
     }
 })
@@ -65,4 +66,5 @@ userSchema.methods.comparePasswords = function(candidatePassword) {
 };
 
 module.exports = mongoose.model("user", userSchema, "users");
-
+module.exports.passwordRegex = passwordRegex;
+module.exports.passwordValidationError = passwordValidationError;

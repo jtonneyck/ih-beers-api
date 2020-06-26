@@ -29,6 +29,7 @@
     "multer-storage-cloudinary": "^2.2.1"
   },
   "devDependencies": {
+    "apidoc": "^0.23.0",
     "newman": "^5.1.0"
   }
 }

@@ -6,6 +6,7 @@ var createError = require('http-errors');
 
 /**
  * @api {get} /beers/search?q=beer Get searched beers
+ * @apiDescription Does a basic text search on name, tagline, description and brewers_tips
  * @apiName searchBeer
  * @apiGroup Beers
  * @apiSuccessExample Success-Response:
