@@ -71,7 +71,7 @@ router.get("/profile", (req,res, next)=> {
 router.post("/profile/edit", (req,res, next)=> {
     let fieldsToBeUpdated = {
         firstname: req.body.firstname, 
-        lastname: req.body.firstname
+        lastname: req.body.lastname
     }
     User.findByIdAndUpdate(req.session.user.id, fieldsToBeUpdated, {new: true, runValidators: true}) 
     .select({username: 1, email: 1, firstname: 1, lastname: 1})
